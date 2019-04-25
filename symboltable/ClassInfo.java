@@ -3,6 +3,7 @@ import java.util.*;
 
 // Class containing data for a Class
 public class ClassInfo {
+  public String extendsFrom,extendsTo;
   public Map <String,String> class_variables_data; // [ class variable name , type  ]
   public Map <String,MethodInfo> methods_data; // [ class methods name , methods info ]
 
@@ -22,7 +23,7 @@ public class ClassInfo {
 
   // List all methods in a class
   public void ListMethods(){
-    System.out.println("Class contains the following methods:");
+    System.out.println("  Class contains the following methods:");
     Set< Map.Entry <String,MethodInfo> > st = methods_data.entrySet();
      for (Map.Entry<String,MethodInfo> cur:st){
          System.out.print(cur.getKey()+", ");
@@ -32,7 +33,7 @@ public class ClassInfo {
 
   // List all methods in detailed form
   public void ListMethodsDetailed(){
-    System.out.println("Class contains the following methods:");
+    System.out.println("  Class contains the following methods:");
     Set< Map.Entry <String,MethodInfo> > st = methods_data.entrySet();
     for (Map.Entry<String,MethodInfo> cur:st){
       System.out.println(cur.getKey());
