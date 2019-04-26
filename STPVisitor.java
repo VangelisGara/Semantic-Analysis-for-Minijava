@@ -12,13 +12,14 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(MainClass n,String argu) {
-    System.out.println("We are in Main Class Declaration");
+    //System.out.println("We are in Main Class Declaration");
     String MainClassName = n.f1.accept(this,null);
     String MainArg = n.f11.accept(this,null);
     String MainName = "main";
     currentClass = MainClassName;
     currentMethod = MainName;
     MethodInfo MainMethodsInfo = new MethodInfo();
+    MainMethodsInfo.type = "void";
     MainMethodsInfo.InsertArgument(MainArg,"String Array");
     ClassInfo MainClassInfo = new ClassInfo();
     MainClassInfo.InsertMethodToClass(MainName,MainMethodsInfo);
@@ -29,7 +30,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(ClassDeclaration n,String argu) {
-    System.out.println("We are in Class Declaration");
+    //System.out.println("We are in Class Declaration");
     String className = n.f1.accept(this,null);
     ClassInfo classInfo = new ClassInfo();
     currentClass = className;
@@ -43,10 +44,10 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(ClassExtendsDeclaration n,String argu) {
-    System.out.println("We are in ClassExtends Declaration");
+    //System.out.println("We are in ClassExtends Declaration");
     String className = n.f1.accept(this,null);
     String extendsfrom = n.f3.accept(this,null);
-    System.out.println(extendsfrom);
+    //System.out.println(extendsfrom);
     ClassInfo classInfo = new ClassInfo();
     currentClass = className;
     currentMethod = "";
@@ -60,11 +61,11 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(VarDeclaration n,String argu){
-    System.out.println("We are in Var Declaration");
-    System.out.println(currentClass + "," + currentMethod);
+    //System.out.println("We are in Var Declaration");
+    //System.out.println(currentClass + "," + currentMethod);
     String vartype = n.f0.accept(this,null);
     String varname = n.f1.accept(this,null);
-    System.out.println(vartype + " " + varname);
+    //System.out.println(vartype + " " + varname);
     if(currentMethod == ""){
       // Insert fields to class that belongs on symbol table
       ST.classes_data.get(currentClass).InsertFieldToClass(varname,vartype);
@@ -77,12 +78,12 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(MethodDeclaration n,String argu){
-    System.out.println("We are in Method Declaration");
+    //System.out.println("We are in Method Declaration");
     String MethodType = n.f1.accept(this,null);
     String MethodName = n.f2.accept(this,null);
     currentMethod = MethodName;
-    System.out.println(MethodType + " " + MethodName);
-    System.out.println(currentClass + " " + currentMethod);
+    //System.out.println(MethodType + " " + MethodName);
+    //System.out.println(currentClass + " " + currentMethod);
     MethodInfo newMethod = new MethodInfo();
     newMethod.type = MethodType;
     // Add method to the current class' info
@@ -95,7 +96,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(FormalParameter n, String argu) {
-    System.out.println("We are in Formal Parameter");
+    //System.out.println("We are in Formal Parameter");
     String parameter_type = n.f0.accept(this,null);
     String parameter_name = n.f1.accept(this,null);
     // Insert argument to current method of current class

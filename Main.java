@@ -1,4 +1,5 @@
 import syntaxtree.*;
+import typecheck.*;
 import visitor.*;
 import java.io.*;
 
@@ -13,12 +14,14 @@ class Main {
       fis = new FileInputStream(args[0]);
       MiniJavaParser parser = new MiniJavaParser(fis);
       System.err.println("Program parsed successfully.");
-      for(int i=0;i<25;i++)
-        System.out.println();
+      // Populate the symbol table
       STPVisitor SymbolTablePopulator = new STPVisitor();
       Goal root = parser.Goal();
-      System.out.println(root.accept(SymbolTablePopulator, null));
+      root.accept(SymbolTablePopulator, null);
       SymbolTablePopulator.getSymbolTable().ListEverything();
+      // Type check the program
+      TCVisitor TypeChecker = new TCVisitor(SymbolTablePopulator.getSymbolTable());
+      root.accept(TypeChecker,null);
     }
     catch (ParseException ex) {
       System.out.println(ex.getMessage());

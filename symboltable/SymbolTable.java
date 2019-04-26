@@ -36,5 +36,6 @@ public class SymbolTable {
          cur.getValue().ListMethodsDetailed();
      }
      System.out.println("");
+     System.out.println(" \n\n----------------------------------\n");
   }
 }
