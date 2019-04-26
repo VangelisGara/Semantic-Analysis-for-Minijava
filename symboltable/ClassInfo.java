@@ -21,6 +21,10 @@ public class ClassInfo {
     methods_data.put(MethodsName,methodsInf);
   }
 
+  public void InsertFieldToClass(String fieldName, String fieldType){
+    class_variables_data.put(fieldName,fieldType);
+  }
+
   // List all methods in a class
   public void ListMethods(){
     System.out.println("    Class contains the following methods:");
@@ -38,7 +42,18 @@ public class ClassInfo {
     for (Map.Entry<String,MethodInfo> cur:st){
       System.out.println("    • " + cur.getKey());
       cur.getValue().ListArguments();
+      cur.getValue().ListVariables();
     }
+    System.out.println("");
+  }
+
+  // List all fields of the class
+  public void ListFields(){
+    System.out.println("    Class contains the following fields:");
+    Set< Map.Entry <String,String> > st = class_variables_data.entrySet();
+    for (Map.Entry<String,String> cur:st){
+      System.out.print("      " + cur.getKey()+":");
+      System.out.println(cur.getValue());    }
     System.out.println("");
   }
 

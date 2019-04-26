@@ -53,6 +53,8 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     ST.InsertClassToSymbolTable(className,classInfo);
     // Visit VarDeclaration
     n.f5.accept(this,null);
+    // Visit MethodDeclaration
+    n.f6.accept(this,null);
     return "ClassExtendsVisited";
   }
 
@@ -62,6 +64,14 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     String vartype = n.f0.accept(this,null);
     String varname = n.f1.accept(this,null);
     System.out.println(vartype + " " + varname);
+    if(currentMethod == ""){
+      // Insert fields to class that belongs on symbol table
+      ST.classes_data.get(currentClass).InsertFieldToClass(varname,vartype);
+    }
+    else {
+      // Insert fields to the method of the class that belongs on symbol table
+      ST.classes_data.get(currentClass).methods_data.get(currentMethod).InsertVar(varname,vartype);
+    }
     return "VarDeclarationVisited";
   }
 
@@ -76,11 +86,28 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     newMethod.type = MethodType;
     // Add method to the current class' info
     ST.classes_data.get(currentClass).InsertMethodToClass(MethodName,newMethod);
+    // Visit FormalParameterList
+    n.f4.accept(this,null);
+    // Visit VarDeclaration
+    n.f7.accept(this,null);
     return "MethodDeclarationVisited";
+  }
+
+  public String visit(FormalParameter n, String argu) {
+    System.out.println("We are in Formal Parameter");
+    String parameter_type = n.f0.accept(this,null);
+    String parameter_name = n.f1.accept(this,null);
+    // Insert argument to current method of current class
+    ST.classes_data.get(currentClass).methods_data.get(currentMethod).InsertArgument(parameter_name,parameter_type);
+    return "FormalParameterVisited";
   }
 
   public String visit(IntegerType n, String argu) {
      return n.f0.toString();
+  }
+
+  public String visit(ArrayType n, String argu) {
+    return "Int Array";
   }
 
   public String visit(BooleanType n, String argu){

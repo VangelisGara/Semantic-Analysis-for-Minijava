@@ -16,6 +16,21 @@ public class MethodInfo {
     arguments_data.put(argName,type);
   }
 
+  public void InsertVar(String varName, String varType){
+    method_variables_data.put(varName,varType);
+  }
+
+  // List all variables the method has
+  public void ListVariables(){
+    System.out.println("        Method contains the following variables:");
+    Set< Map.Entry <String,String> > st = method_variables_data.entrySet();
+     for (Map.Entry<String,String> cur:st){
+         System.out.print("         " + cur.getKey()+":");
+         System.out.println(cur.getValue());
+     }
+     System.out.println("");
+  }
+
   // List all arguments the method has
   public void ListArguments(){
     System.out.println("        Method contains the following arguments:");

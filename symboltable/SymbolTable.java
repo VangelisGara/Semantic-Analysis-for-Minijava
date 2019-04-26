@@ -30,6 +30,7 @@ public class SymbolTable {
     Set< Map.Entry <String,ClassInfo> > st = classes_data.entrySet();
      for (Map.Entry <String,ClassInfo> cur:st){
          System.out.println(" • " + cur.getKey());
+         cur.getValue().ListFields();
          cur.getValue().ListMethodsDetailed();
      }
      System.out.println("");
