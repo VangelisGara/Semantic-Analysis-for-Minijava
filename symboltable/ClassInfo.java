@@ -23,7 +23,7 @@ public class ClassInfo {
 
   // List all methods in a class
   public void ListMethods(){
-    System.out.println("  Class contains the following methods:");
+    System.out.println("    Class contains the following methods:");
     Set< Map.Entry <String,MethodInfo> > st = methods_data.entrySet();
      for (Map.Entry<String,MethodInfo> cur:st){
          System.out.print(cur.getKey()+", ");
@@ -33,10 +33,10 @@ public class ClassInfo {
 
   // List all methods in detailed form
   public void ListMethodsDetailed(){
-    System.out.println("  Class contains the following methods:");
+    System.out.println("    Class contains the following methods:");
     Set< Map.Entry <String,MethodInfo> > st = methods_data.entrySet();
     for (Map.Entry<String,MethodInfo> cur:st){
-      System.out.println(cur.getKey());
+      System.out.println("    • " + cur.getKey());
       cur.getValue().ListArguments();
     }
     System.out.println("");

@@ -25,10 +25,11 @@ public class SymbolTable {
 
   // List everything in symbol table
   public void ListEverything(){
-    System.out.println("Symbol Table contains the following classes:");
+    System.out.println(" \n\n----------------------------------\n");
+    System.out.println(" Symbol Table contains the following classes:");
     Set< Map.Entry <String,ClassInfo> > st = classes_data.entrySet();
      for (Map.Entry <String,ClassInfo> cur:st){
-         System.out.println(cur.getKey());
+         System.out.println(" • " + cur.getKey());
          cur.getValue().ListMethodsDetailed();
      }
      System.out.println("");

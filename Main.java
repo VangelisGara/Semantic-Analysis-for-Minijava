@@ -18,6 +18,7 @@ class Main {
       STPVisitor test = new STPVisitor();
       Goal root = parser.Goal();
       System.out.println(root.accept(test, null));
+      test.getSymbolTable().ListEverything();
     }
     catch (ParseException ex) {
       System.out.println(ex.getMessage());
