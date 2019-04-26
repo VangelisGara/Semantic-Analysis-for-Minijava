@@ -13,12 +13,12 @@ class Main {
       fis = new FileInputStream(args[0]);
       MiniJavaParser parser = new MiniJavaParser(fis);
       System.err.println("Program parsed successfully.");
-      for(int i=0;i<20;i++)
+      for(int i=0;i<25;i++)
         System.out.println();
-      STPVisitor test = new STPVisitor();
+      STPVisitor SymbolTablePopulator = new STPVisitor();
       Goal root = parser.Goal();
-      System.out.println(root.accept(test, null));
-      test.getSymbolTable().ListEverything();
+      System.out.println(root.accept(SymbolTablePopulator, null));
+      SymbolTablePopulator.getSymbolTable().ListEverything();
     }
     catch (ParseException ex) {
       System.out.println(ex.getMessage());

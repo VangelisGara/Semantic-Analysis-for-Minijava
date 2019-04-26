@@ -3,7 +3,7 @@ import visitor.GJDepthFirst;
 import symboltable.*;
 
 public class STPVisitor extends GJDepthFirst <String,String> {
-  SymbolTable ST;
+  SymbolTable ST; // our symbol table
   String currentClass;
   String currentMethod;
 
@@ -45,11 +45,12 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   public String visit(ClassExtendsDeclaration n,String argu) {
     System.out.println("We are in ClassExtends Declaration");
     String className = n.f1.accept(this,null);
-    String extendsFrom = n.f3.accept(this,null);
-    System.out.println(extendsFrom);
+    String extendsfrom = n.f3.accept(this,null);
+    System.out.println(extendsfrom);
     ClassInfo classInfo = new ClassInfo();
     currentClass = className;
     currentMethod = "";
+    classInfo.extendsFrom = extendsfrom;
     ST.InsertClassToSymbolTable(className,classInfo);
     // Visit VarDeclaration
     n.f5.accept(this,null);
