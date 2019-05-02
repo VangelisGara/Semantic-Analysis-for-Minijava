@@ -9,7 +9,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   String currentMethod;
 
   STPVisitor(){
-    System.out.println("\n 2.Populating the Symbol Table\n\n");
+    System.out.println("\n 2.Populating the Symbol Table");
     ST = new SymbolTable();
   }
 

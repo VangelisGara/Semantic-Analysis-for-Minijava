@@ -15,6 +15,7 @@ public class SymbolTable {
   public void InsertClassToSymbolTable(String className, ClassInfo classInfo) throws TypeCheckException
   {
     classes_data.put(className,classInfo);
+    throw new TypeCheckException("Hihihi");
   }
 
   // List all classes in symbol table
@@ -29,7 +30,6 @@ public class SymbolTable {
 
   // List everything in symbol table
   public void ListEverything(){
-    System.out.println(" \n\n----------------------------------\n");
     System.out.println(" Symbol Table contains the following classes:");
     Set< Map.Entry <String,ClassInfo> > st = classes_data.entrySet();
      for (Map.Entry <String,ClassInfo> cur:st){
@@ -38,6 +38,5 @@ public class SymbolTable {
          cur.getValue().ListMethodsDetailed();
      }
      System.out.println("");
-     System.out.println(" \n\n----------------------------------\n");
   }
 }
