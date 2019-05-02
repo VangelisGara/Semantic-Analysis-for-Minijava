@@ -1,5 +1,6 @@
 package symboltable;
 import java.util.*;
+import typecheckexception.*;
 
 // Symbol table for our semantic analysis - type checking
 public class SymbolTable {
@@ -11,7 +12,8 @@ public class SymbolTable {
   }
 
   // Insert a class to synbol table
-  public void InsertClassToSymbolTable(String className, ClassInfo classInfo){
+  public void InsertClassToSymbolTable(String className, ClassInfo classInfo) throws TypeCheckException
+  {
     classes_data.put(className,classInfo);
   }
 

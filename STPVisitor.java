@@ -1,6 +1,7 @@
 import syntaxtree.*;
 import visitor.GJDepthFirst;
 import symboltable.*;
+import typecheckexception.*;
 
 public class STPVisitor extends GJDepthFirst <String,String> {
   SymbolTable ST; // our symbol table
@@ -30,7 +31,8 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     return "MainClassVisited";
   }
 
-  public String visit(ClassDeclaration n,String argu) {
+  public String visit(ClassDeclaration n,String argu) throws TypeCheckException
+  {
     //System.out.println("We are in Class Declaration");
     String className = n.f1.accept(this,null);
     ClassInfo classInfo = new ClassInfo();
@@ -44,7 +46,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     return "ClassVisited";
   }
 
-  public String visit(ClassExtendsDeclaration n,String argu) {
+  public String visit(ClassExtendsDeclaration n,String argu){
     //System.out.println("We are in ClassExtends Declaration");
     String className = n.f1.accept(this,null);
     String extendsfrom = n.f3.accept(this,null);
