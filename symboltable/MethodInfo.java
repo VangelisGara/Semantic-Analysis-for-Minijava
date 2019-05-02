@@ -14,12 +14,12 @@ public class MethodInfo {
   }
 
   // Insert a method argument
-  public void InsertArgument(String argName,String type){
+  public void InsertArgumentToMethod(String argName,String type){
     arguments_data.put(argName,type);
   }
 
   // Insert a method variable
-  public void InsertVar(String varName, String varType){
+  public void InsertVarToMethod(String varName, String varType){
     method_variables_data.put(varName,varType);
   }
 

@@ -7,8 +7,10 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   TypeCheck TC; // our type checker
 
   TCVisitor(SymbolTable symbolTable){
+    System.out.println("\n 3.Type Cheking the input");
     TC = new TypeCheck(symbolTable);
   }
+
   public String visit(MainClass n,String argu) {
     //System.out.println("We are in Main Class Declaration");
     String MainClassName = n.f1.accept(this,null);
@@ -55,7 +57,6 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     TC.IsVarDeclared(Dest);
     return "AssignmentStatementVisited";
   }
-
 
   public String visit(IntegerType n, String argu) {
      return n.f0.toString();

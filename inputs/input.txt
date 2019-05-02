@@ -2,6 +2,17 @@ class Test {
   public static void main(String[] args) {
     int x;
     int y;
+    int z;
     z = 5;
   }
+}
+
+class Test1{
+
+  public boolean Init(int v_key) {
+     key = v_key;
+     has_left = false;
+     has_right = false;
+  }
+
 }

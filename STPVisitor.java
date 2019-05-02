@@ -8,6 +8,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   String currentMethod;
 
   STPVisitor(){
+    System.out.println("\n 2.Populating the Symbol Table\n\n");
     ST = new SymbolTable();
   }
 
@@ -20,7 +21,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     currentMethod = MainName;
     MethodInfo MainMethodsInfo = new MethodInfo();
     MainMethodsInfo.type = "void";
-    MainMethodsInfo.InsertArgument(MainArg,"String Array");
+    MainMethodsInfo.InsertArgumentToMethod(MainArg,"String Array");
     ClassInfo MainClassInfo = new ClassInfo();
     MainClassInfo.InsertMethodToClass(MainName,MainMethodsInfo);
     ST.InsertClassToSymbolTable(MainClassName,MainClassInfo);
@@ -72,7 +73,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     }
     else {
       // Insert fields to the method of the class that belongs on symbol table
-      ST.classes_data.get(currentClass).methods_data.get(currentMethod).InsertVar(varname,vartype);
+      ST.classes_data.get(currentClass).methods_data.get(currentMethod).InsertVarToMethod(varname,vartype);
     }
     return "VarDeclarationVisited";
   }
@@ -100,7 +101,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     String parameter_type = n.f0.accept(this,null);
     String parameter_name = n.f1.accept(this,null);
     // Insert argument to current method of current class
-    ST.classes_data.get(currentClass).methods_data.get(currentMethod).InsertArgument(parameter_name,parameter_type);
+    ST.classes_data.get(currentClass).methods_data.get(currentMethod).InsertArgumentToMethod(parameter_name,parameter_type);
     return "FormalParameterVisited";
   }
 

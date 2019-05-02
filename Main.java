@@ -13,10 +13,11 @@ class Main {
     try {
       fis = new FileInputStream(args[0]);
       MiniJavaParser parser = new MiniJavaParser(fis);
-      System.err.println("Program parsed successfully.");
+      System.err.println(" 1.Program parsed successfully.");
+      // Get the root of the tree
+      Goal root = parser.Goal();
       // Populate the symbol table
       STPVisitor SymbolTablePopulator = new STPVisitor();
-      Goal root = parser.Goal();
       root.accept(SymbolTablePopulator, null);
       SymbolTablePopulator.getSymbolTable().ListEverything();
       // Type check the program
