@@ -1,6 +1,6 @@
 package symboltable;
 import java.util.*;
-import typecheckexception.*;
+import staticheckingexception.*;
 
 // Symbol table for our semantic analysis - type checking
 public class SymbolTable {
@@ -11,11 +11,37 @@ public class SymbolTable {
     classes_data = new HashMap<String,ClassInfo>();
   }
 
-  // Insert a class to synbol table
-  public void InsertClassToSymbolTable(String className, ClassInfo classInfo) throws TypeCheckException
+  // Insert a class to symbol table
+  public void InsertClassToSymbolTable(String className, ClassInfo classInfo) throws StatiCheckingException
   {
+    // check if class is already declared in program
+    if(classes_data.containsKey(className))
+      throw new StatiCheckingException("\n✗ Class with name " + className + " has already been defined");
+
+    // if class extends from superclass
+    if(classInfo.extendsFrom != ""){
+      // make sure that superclass has been declared
+      if(classes_data.containsKey(classInfo.extendsFrom) == false)
+        throw new StatiCheckingException("\n✗ Class with name " + classInfo.extendsFrom + " has not been declared, to extend from");
+
+      // a class cannot inherit from itself
+      if(classInfo.extendsFrom == className)
+        throw new StatiCheckingException("\n✗ Class with name " + classInfo.extendsFrom + " cannot inherit from itself");
+
+      // allow only single inheritance
+      String grandfather = classes_data.get(classInfo.extendsFrom).extendsFrom;
+      if(grandfather != "")
+        throw new StatiCheckingException("\n✗ Class with name " + className + " must have single inheritance");
+
+      // check for circural inheritance
+      if(grandfather == className)
+        throw new StatiCheckingException("\n✗ Class with name " + className + " can't have circural inheritance");
+
+    }
+
+    // check
+
     classes_data.put(className,classInfo);
-    throw new TypeCheckException("Hihihi");
   }
 
   // List all classes in symbol table

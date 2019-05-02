@@ -1,7 +1,7 @@
 import syntaxtree.*;
 import visitor.GJDepthFirst;
 import symboltable.*;
-import typecheckexception.*;
+import staticheckingexception.*;
 
 public class STPVisitor extends GJDepthFirst <String,String> {
   SymbolTable ST; // our symbol table
@@ -9,7 +9,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   String currentMethod;
 
   STPVisitor(){
-    System.out.println("\n 2.Populating the Symbol Table");
+    System.out.println("\n 2.Populating the Symbol Table - Uniqueness Checks");
     ST = new SymbolTable();
   }
 
@@ -31,7 +31,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     return "MainClassVisited";
   }
 
-  public String visit(ClassDeclaration n,String argu) throws TypeCheckException
+  public String visit(ClassDeclaration n,String argu) throws StatiCheckingException
   {
     //System.out.println("We are in Class Declaration");
     String className = n.f1.accept(this,null);
@@ -46,7 +46,8 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     return "ClassVisited";
   }
 
-  public String visit(ClassExtendsDeclaration n,String argu){
+  public String visit(ClassExtendsDeclaration n,String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in ClassExtends Declaration");
     String className = n.f1.accept(this,null);
     String extendsfrom = n.f3.accept(this,null);

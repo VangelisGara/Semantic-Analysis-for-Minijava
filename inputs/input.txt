@@ -7,12 +7,16 @@ class Test {
   }
 }
 
-class Test1{
+class Test2 {
 
   public boolean Init(int v_key) {
      key = v_key;
      has_left = false;
      has_right = false;
+     return true;
   }
 
+}
+
+class Test3 extends Test3{
 }

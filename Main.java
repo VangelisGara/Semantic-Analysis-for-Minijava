@@ -2,7 +2,7 @@ import syntaxtree.*;
 import typecheck.*;
 import visitor.*;
 import java.io.*;
-import typecheckexception.*;
+import staticheckingexception.*;
 
 class Main {
   public static void main(String[] args) {
@@ -30,8 +30,8 @@ class Main {
       catch (ParseException ex) {
         System.out.println(ex.getMessage());
       }
-      catch (TypeCheckException ex){
-        System.err.println(ex);
+      catch (StatiCheckingException ex){
+        System.err.println("\n\n" + ex);
       }
       catch (FileNotFoundException ex) {
         System.err.println(ex.getMessage());
