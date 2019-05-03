@@ -7,7 +7,6 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   TypeCheck TC; // our type checker
 
   TCVisitor(SymbolTable symbolTable){
-    System.out.println("\n 3.Type Cheking the input");
     TC = new TypeCheck(symbolTable);
   }
 

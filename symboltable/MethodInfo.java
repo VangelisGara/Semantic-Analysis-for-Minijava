@@ -1,8 +1,10 @@
 package symboltable;
+import staticheckingexception.*;
 import java.util.*;
 
 // Class containing data about a method
 public class MethodInfo {
+  public String methodName="";
   public String type; // method's type
   public LinkedHashMap <String,String> arguments_data; // [ argument name , type ]
   public Map <String,String> method_variables_data; // [ methods variable name , type ]
@@ -14,12 +16,24 @@ public class MethodInfo {
   }
 
   // Insert a method argument
-  public void InsertArgumentToMethod(String argName,String type){
+  public void InsertArgumentToMethod(String argName,String type) throws StatiCheckingException
+  {
+    // check if argument has already been in decalred in method
+    if(arguments_data.containsKey(argName))
+      throw new StatiCheckingException("\n✗ Multiple declaration of argument " + argName + " in method " + this.methodName);
     arguments_data.put(argName,type);
   }
 
   // Insert a method variable
-  public void InsertVarToMethod(String varName, String varType){
+  public void InsertVarToMethod(String varName, String varType) throws StatiCheckingException
+  {
+    // check if variable has already been in decalred in method
+    if(method_variables_data.containsKey(varName))
+      throw new StatiCheckingException("\n✗ Multiple declaration of variable " + varName + " in method " + this.methodName);
+
+    // check if variable has already been in decalred in method as argument
+    if(arguments_data.containsKey(varName))
+      throw new StatiCheckingException("\n✗ Variable " + varName + " has already been declared as argument in method " + this.methodName);
     method_variables_data.put(varName,varType);
   }
 

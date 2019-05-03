@@ -1,8 +1,10 @@
 package symboltable;
 import java.util.*;
+import staticheckingexception.*;
 
 // Class containing data for a Class
 public class ClassInfo {
+  public String className="";
   public String extendsFrom=""; // inheritance relationship
   public String extendsTo=""; // inheritance relationship
   public Map <String,String> class_variables_data; // [ class variable name , type  ]
@@ -15,12 +17,36 @@ public class ClassInfo {
   }
 
   // Insert a method to a class
-  public void InsertMethodToClass(String MethodsName,MethodInfo methodsInf){
+  public void InsertMethodToClass(String MethodsName,MethodInfo methodsInf) throws StatiCheckingException
+  {
+    // Check if method has already been declared in class
+    if(methods_data.containsKey(MethodsName))
+      throw new StatiCheckingException("\n✗ Multiple declaration of method " + MethodsName + " in class " + this.className);
+
     methods_data.put(MethodsName,methodsInf);
   }
 
+  // Only Inheritant Polymorphism is allowed
+  public void InheritantPolymorphismCheck(String MethodsName,ClassInfo superclass){
+    if(superclass != null){
+      if(superclass.methods_data.containsKey(MethodsName)){
+        // check for the return type of polymorphed function
+        if(superclass.methods_data.get(MethodsName).type != methods_data.get(MethodsName).type)
+          throw new StatiCheckingException("\n✗ Methods " + MethodsName + " return type in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
+
+        // check for the arguments of the polymorphed function
+        if( !(superclass.methods_data.get(MethodsName).arguments_data.equals(methods_data.get(MethodsName).arguments_data)) )
+          throw new StatiCheckingException("\n✗ Methods " + MethodsName + " arguments in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
+      }
+    }
+  }
+
   // Insert a field to a class
-  public void InsertFieldToClass(String fieldName, String fieldType){
+  public void InsertFieldToClass(String fieldName, String fieldType) throws StatiCheckingException
+  {
+    // check if field has already been declared in class
+    if(class_variables_data.containsKey(fieldName))
+      throw new StatiCheckingException("\n✗ Multiple declaration of field " + fieldName + " in class " + this.className);
     class_variables_data.put(fieldName,fieldType);
   }
 

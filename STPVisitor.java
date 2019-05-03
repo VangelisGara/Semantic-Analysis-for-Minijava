@@ -9,7 +9,6 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   String currentMethod;
 
   STPVisitor(){
-    System.out.println("\n 2.Populating the Symbol Table - Uniqueness Checks");
     ST = new SymbolTable();
   }
 
@@ -21,9 +20,11 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     currentClass = MainClassName;
     currentMethod = MainName;
     MethodInfo MainMethodsInfo = new MethodInfo();
+    MainMethodsInfo.methodName = MainName;
     MainMethodsInfo.type = "void";
     MainMethodsInfo.InsertArgumentToMethod(MainArg,"String Array");
     ClassInfo MainClassInfo = new ClassInfo();
+    MainClassInfo.className = MainClassName;
     MainClassInfo.InsertMethodToClass(MainName,MainMethodsInfo);
     ST.InsertClassToSymbolTable(MainClassName,MainClassInfo);
     // Visit VarDeclaration
@@ -38,6 +39,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     ClassInfo classInfo = new ClassInfo();
     currentClass = className;
     currentMethod = "";
+    classInfo.className = currentClass;
     ST.InsertClassToSymbolTable(className,classInfo);
     // Visit VarDeclaration
     n.f3.accept(this,null);
@@ -56,6 +58,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     currentClass = className;
     currentMethod = "";
     classInfo.extendsFrom = extendsfrom;
+    classInfo.className = currentClass;
     ST.InsertClassToSymbolTable(className,classInfo);
     // Visit VarDeclaration
     n.f5.accept(this,null);
@@ -64,7 +67,8 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     return "ClassExtendsVisited";
   }
 
-  public String visit(VarDeclaration n,String argu){
+  public String visit(VarDeclaration n,String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in Var Declaration");
     //System.out.println(currentClass + "," + currentMethod);
     String vartype = n.f0.accept(this,null);
@@ -81,7 +85,8 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     return "VarDeclarationVisited";
   }
 
-  public String visit(MethodDeclaration n,String argu){
+  public String visit(MethodDeclaration n,String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in Method Declaration");
     String MethodType = n.f1.accept(this,null);
     String MethodName = n.f2.accept(this,null);
@@ -90,16 +95,24 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     //System.out.println(currentClass + " " + currentMethod);
     MethodInfo newMethod = new MethodInfo();
     newMethod.type = MethodType;
+    newMethod.methodName = MethodName;
     // Add method to the current class' info
     ST.classes_data.get(currentClass).InsertMethodToClass(MethodName,newMethod);
     // Visit FormalParameterList
     n.f4.accept(this,null);
+    // Before continuing, do a polymorphe check
+    ClassInfo superclass = null;
+    String superclassName = ST.classes_data.get(currentClass).extendsFrom;
+    if( superclassName != "")
+      superclass = ST.classes_data.get(superclassName);
+    ST.classes_data.get(currentClass).InheritantPolymorphismCheck(MethodName,superclass);
     // Visit VarDeclaration
     n.f7.accept(this,null);
     return "MethodDeclarationVisited";
   }
 
-  public String visit(FormalParameter n, String argu) {
+  public String visit(FormalParameter n, String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in Formal Parameter");
     String parameter_type = n.f0.accept(this,null);
     String parameter_name = n.f1.accept(this,null);

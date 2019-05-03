@@ -8,15 +8,19 @@ class Test {
 }
 
 class Test2 {
+  int x;
+  int y;
 
-  public boolean Init(int v_key) {
-     key = v_key;
-     has_left = false;
-     has_right = false;
-     return true;
+  public boolean TestMethod(int q,int w, int e){
+    return 0;
   }
 
 }
 
-class Test3 extends Test3{
+class Test3 extends Test2{
+  public boolean TestMethod(int q,int w,int e,int k){
+    int x;
+    int y;
+    return 1;
+  }
 }
