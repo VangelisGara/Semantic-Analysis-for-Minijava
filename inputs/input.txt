@@ -13,7 +13,8 @@ class Test2 {
   boolean o;
   int l;
   public boolean TestMethod(Test q,int w, int e){
-    l[4] = 5;
+    x = new Test();
+    o = !!!o;
     return 0;
   }
 
