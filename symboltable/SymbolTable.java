@@ -38,9 +38,6 @@ public class SymbolTable {
         throw new StatiCheckingException("\n✗ Class with name " + className + " can't have circural inheritance");
 
     }
-
-    // check
-
     classes_data.put(className,classInfo);
   }
 

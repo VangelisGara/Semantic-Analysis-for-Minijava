@@ -53,7 +53,6 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     //System.out.println("We are in ClassExtends Declaration");
     String className = n.f1.accept(this,null);
     String extendsfrom = n.f3.accept(this,null);
-    //System.out.println(extendsfrom);
     ClassInfo classInfo = new ClassInfo();
     currentClass = className;
     currentMethod = "";
@@ -70,10 +69,8 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   public String visit(VarDeclaration n,String argu) throws StatiCheckingException
   {
     //System.out.println("We are in Var Declaration");
-    //System.out.println(currentClass + "," + currentMethod);
     String vartype = n.f0.accept(this,null);
     String varname = n.f1.accept(this,null);
-    //System.out.println(vartype + " " + varname);
     if(currentMethod == ""){
       // Insert fields to class that belongs on symbol table
       ST.classes_data.get(currentClass).InsertFieldToClass(varname,vartype);
@@ -91,8 +88,6 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     String MethodType = n.f1.accept(this,null);
     String MethodName = n.f2.accept(this,null);
     currentMethod = MethodName;
-    //System.out.println(MethodType + " " + MethodName);
-    //System.out.println(currentClass + " " + currentMethod);
     MethodInfo newMethod = new MethodInfo();
     newMethod.type = MethodType;
     newMethod.methodName = MethodName;
@@ -100,7 +95,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
     ST.classes_data.get(currentClass).InsertMethodToClass(MethodName,newMethod);
     // Visit FormalParameterList
     n.f4.accept(this,null);
-    // Before continuing, do a polymorphe check
+    // Before continuing, do a polymorph check
     ClassInfo superclass = null;
     String superclassName = ST.classes_data.get(currentClass).extendsFrom;
     if( superclassName != "")
