@@ -1,6 +1,6 @@
+package typecheck;
 import symboltable.*;
 import staticheckingexception.*;
-package typecheck;
 
 public class TypeCheck{
   public SymbolTable ST;

@@ -1,8 +1,8 @@
 import java.io.*;
 import syntaxtree.*;
-import staticheckingexception.*;
 import typecheck.*;
 import visitor.*;
+import staticheckingexception.*;
 
 class Main {
   public static void main(String[] args){
