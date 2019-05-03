@@ -1,7 +1,7 @@
+import staticheckingexception.*;
+import symboltable.*;
 import syntaxtree.*;
 import visitor.GJDepthFirst;
-import symboltable.*;
-import staticheckingexception.*;
 
 public class STPVisitor extends GJDepthFirst <String,String> {
   SymbolTable ST; // our symbol table
@@ -15,16 +15,16 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   public String visit(MainClass n,String argu) {
     //System.out.println("We are in Main Class Declaration");
     String MainClassName = n.f1.accept(this,null);
-    String MainArg = n.f11.accept(this,null);
     String MainName = "main";
+    String MainArg = n.f11.accept(this,null);
     currentClass = MainClassName;
     currentMethod = MainName;
+    ClassInfo MainClassInfo = new ClassInfo();
+    MainClassInfo.className = MainClassName;
     MethodInfo MainMethodsInfo = new MethodInfo();
     MainMethodsInfo.methodName = MainName;
     MainMethodsInfo.type = "void";
     MainMethodsInfo.InsertArgumentToMethod(MainArg,"String Array");
-    ClassInfo MainClassInfo = new ClassInfo();
-    MainClassInfo.className = MainClassName;
     MainClassInfo.InsertMethodToClass(MainName,MainMethodsInfo);
     ST.InsertClassToSymbolTable(MainClassName,MainClassInfo);
     // Visit VarDeclaration

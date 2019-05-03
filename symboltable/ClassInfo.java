@@ -1,6 +1,6 @@
 package symboltable;
-import java.util.*;
 import staticheckingexception.*;
+import java.util.*;
 
 // Class containing data for a Class
 public class ClassInfo {

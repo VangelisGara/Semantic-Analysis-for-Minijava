@@ -15,7 +15,6 @@ class Main {
     for(int i=0; i<args.length; i++){
       try {
         System.out.println("\n▸ Static Checking file: " + args[i] + "\n");
-
         fis = new FileInputStream(args[i]);
         MiniJavaParser parser = new MiniJavaParser(fis);
         System.err.println(" 1.Program parsed successfully. \n\n\n");
@@ -29,7 +28,6 @@ class Main {
         TCVisitor TypeChecker = new TCVisitor(SymbolTablePopulator.getSymbolTable());
         root.accept(TypeChecker,null);
         System.out.println("\n 3.Type Cheking the input finished successfully. \n\n\n");
-
         System.out.println("\n ✓ Program passed the static checking. \n\n\n");
       }
       catch (ParseException ex) {

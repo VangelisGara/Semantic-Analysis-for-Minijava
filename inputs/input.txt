@@ -14,7 +14,7 @@ class Test2 {
   int l;
   public boolean TestMethod(Test q,int w, int e){
     x = new Test();
-    o = !!!o;
+    o = !!!false;
     return 0;
   }
 

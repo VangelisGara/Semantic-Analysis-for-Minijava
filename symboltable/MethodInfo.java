@@ -27,7 +27,7 @@ public class MethodInfo {
   // Insert a method variable
   public void InsertVarToMethod(String varName, String varType) throws StatiCheckingException
   {
-    // check if variable has already been in decalred in method
+    // check if variable has already been in declared in method
     if(method_variables_data.containsKey(varName))
       throw new StatiCheckingException("\n✗ Multiple declaration of variable " + varName + " in method " + this.methodName);
 

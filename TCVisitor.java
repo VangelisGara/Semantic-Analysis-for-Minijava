@@ -88,10 +88,6 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "TypeVisited";
   }
 
-  
-
-
-
   public String visit(IntegerLiteral n, String argu) {
      return "an integer";
   }
@@ -116,14 +112,16 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "integer array";
   }
 
-  public String visit(AllocationExpression n, String argu) {
+  public String visit(AllocationExpression n, String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in AllocationExpression");
     String classObj = n.f1.accept(this,null);
     TC.IsClassDeclared(classObj);
     return "class";
   }
 
-  public String visit(NotExpression n, String argu) {
+  public String visit(NotExpression n, String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in AllocationExpression");
     String clause = n.f1.accept(this,null);
     TC.CheckNotOperation(clause);
