@@ -10,8 +10,10 @@ class Test {
 class Test2 {
   int[] x;
   Test3 y;
-
+  boolean o;
+  int l;
   public boolean TestMethod(Test q,int w, int e){
+    l[4] = 5;
     return 0;
   }
 
@@ -19,8 +21,8 @@ class Test2 {
 
 class Test3 extends Test2{
   public boolean TestMethod(Test q,int w,int e){
-    boolean x;
     int y;
+    o = 4;
     return 1;
   }
 }

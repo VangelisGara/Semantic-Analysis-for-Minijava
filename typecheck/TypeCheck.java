@@ -21,20 +21,34 @@ public class TypeCheck{
   }
 
   // Check that variable has been declared
-  public void IsVarDeclared(String var){
-    //System.out.println(var);
-    //System.out.println(currentClass);
-    //System.out.println(currentMethod);
+  public void IsVarDeclared(String var) throws StatiCheckingException
+  {
     boolean declaredAsField = ST.classes_data.get(currentClass).class_variables_data.containsKey(var);
     boolean declaredAsMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.containsKey(var);
     boolean declaredAsArgument = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.containsKey(var);
-    //System.out.println(declaredAsField);
-    //System.out.println(declaredAsMethodVar);
-    //System.out.println(declaredAsArgument);
-    if( !(declaredAsField || declaredAsArgument || declaredAsMethodVar) ){
-      System.out.println(var + " has not been declared");
-      System.exit(1);
-    }
+    boolean declaredAsFieldInSuperclass = false;
+    String superclass = ST.classes_data.get(currentClass).extendsFrom;
+    if(superclass != "")
+      declaredAsFieldInSuperclass = ST.classes_data.get(superclass).class_variables_data.containsKey(var);
+    if( !(declaredAsField || declaredAsArgument || declaredAsMethodVar || declaredAsFieldInSuperclass) )
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " has not been declared");
+  }
+
+  // Check if variable is an array
+  public void IsVarArray(String var) throws StatiCheckingException
+  {
+    // get the type of the var
+    String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
+    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
+    typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
+    String superclass = ST.classes_data.get(currentClass).extendsFrom;
+    if(superclass != "")
+      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
+
+    // check if type is int array
+    if(typeGotFromMethodVar != "Int Array" && typeGotFromMethodArg != "Int Array" &&  typeGotFromField != "Int Array" && typeGotFromSuperField != "Int Array")
+        throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't an int array");
   }
 
   // Check that type is allowed

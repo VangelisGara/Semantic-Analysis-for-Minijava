@@ -66,8 +66,17 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   public String visit(AssignmentStatement n,String argu) {
     //System.out.println("We are in AssignmentStatement");
     String Dest = n.f0.accept(this,null);
+    // Check if destination variable has been declared
     TC.IsVarDeclared(Dest);
     return "AssignmentStatementVisited";
+  }
+
+  public String visit(ArrayAssignmentStatement n,String argu){
+    System.out.println("We are in ArrayAssignmentStatement");
+    String ArrDest = n.f0.accept(this,null);
+    TC.IsVarDeclared(ArrDest);
+    TC.IsVarArray(ArrDest);
+    return "ArrayAssignmentStatementVisited";
   }
 
   public String visit(Type n, String argu) throws StatiCheckingException
