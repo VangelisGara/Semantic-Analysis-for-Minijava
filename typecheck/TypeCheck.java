@@ -1,5 +1,6 @@
 package typecheck;
 import symboltable.*;
+import staticheckingexception.*;
 
 public class TypeCheck{
   public SymbolTable ST;
@@ -35,4 +36,20 @@ public class TypeCheck{
       System.exit(1);
     }
   }
+
+  // Check that type is allowed
+  public void IsTypeAllowed(String type) throws StatiCheckingException
+  {
+    // check if type is one of the classes declared
+    if( !(ST.classes_data.containsKey(type)) ){
+      // check if type is one of the basic types
+      if(type != "int" && type != "boolean" && type != "Int Array"){
+        if(this.currentMethod == "")
+          throw new StatiCheckingException("\n✗ Illegal type " + type + " in class " + this.currentClass);
+        else
+          throw new StatiCheckingException("\n✗ Illegal type " + type + " in method " + this.currentMethod + " of class " + this.currentClass);
+      }
+    }
+  }
+
 }

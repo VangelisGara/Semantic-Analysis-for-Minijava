@@ -8,18 +8,18 @@ class Test {
 }
 
 class Test2 {
-  int x;
-  int y;
+  int[] x;
+  Test3 y;
 
-  public boolean TestMethod(int q,int w, int e){
+  public boolean TestMethod(Test q,int w, int e){
     return 0;
   }
 
 }
 
 class Test3 extends Test2{
-  public boolean TestMethod(int q,int w,int e,int k){
-    int x;
+  public boolean TestMethod(Test q,int w,int e){
+    boolean x;
     int y;
     return 1;
   }
