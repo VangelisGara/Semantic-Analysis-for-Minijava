@@ -63,7 +63,8 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "MethodDeclarationVisited";
   }
 
-  public String visit(AssignmentStatement n,String argu) {
+  public String visit(AssignmentStatement n,String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in AssignmentStatement");
     String Dest = n.f0.accept(this,null);
     TC.IsVarDeclared(Dest); // Check if destination variable has been declared
@@ -72,7 +73,8 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "AssignmentStatementVisited";
   }
 
-  public String visit(ArrayAssignmentStatement n,String argu){
+  public String visit(ArrayAssignmentStatement n,String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in ArrayAssignmentStatement");
     String ArrDest = n.f0.accept(this,null);
     TC.IsVarDeclared(ArrDest);
@@ -86,6 +88,55 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     String type = n.f0.accept(this,null);
     TC.IsTypeAllowed(type);
     return "TypeVisited";
+  }
+
+  public String visit(AndExpression n,String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in AndExpression");
+    String leftClause = n.f0.accept(this,null);
+    String rightClause = n.f2.accept(this,null);
+    TC.CheckAndOperation(leftClause,rightClause);
+    return "boolean";
+  }
+
+  public String visit(CompareExpression n,String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in CompareExpression");
+    String leftPrimaryExpr,rightPrimaryExpr;
+    leftPrimaryExpr = n.f0.accept(this,null);
+    rightPrimaryExpr = n.f2.accept(this,null);
+    TC.CheckArithmeticExpression(leftPrimaryExpr,rightPrimaryExpr);
+    return "boolean";
+  }
+
+  public String visit(PlusExpression n, String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in PlusExpression");
+    String leftPrimaryExpr,rightPrimaryExpr;
+    leftPrimaryExpr = n.f0.accept(this,null);
+    rightPrimaryExpr = n.f2.accept(this,null);
+    TC.CheckArithmeticExpression(leftPrimaryExpr,rightPrimaryExpr);
+    return "an integer";
+  }
+
+  public String visit(MinusExpression n, String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in MinusExpression");
+    String leftPrimaryExpr,rightPrimaryExpr;
+    leftPrimaryExpr = n.f0.accept(this,null);
+    rightPrimaryExpr = n.f2.accept(this,null);
+    TC.CheckArithmeticExpression(leftPrimaryExpr,rightPrimaryExpr);
+    return "an integer";
+  }
+
+  public String visit(TimesExpression n, String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in TimesExpression");
+    String leftPrimaryExpr,rightPrimaryExpr;
+    leftPrimaryExpr = n.f0.accept(this,null);
+    rightPrimaryExpr = n.f2.accept(this,null);
+    TC.CheckArithmeticExpression(leftPrimaryExpr,rightPrimaryExpr);
+    return "an integer";
   }
 
   public String visit(IntegerLiteral n, String argu) {
@@ -117,7 +168,8 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     //System.out.println("We are in AllocationExpression");
     String classObj = n.f1.accept(this,null);
     TC.IsClassDeclared(classObj);
-    return "class";
+    // add special characters, so we can now that a primary expression if an allocation expression
+    return "/" + classObj + "/";
   }
 
   public String visit(NotExpression n, String argu) throws StatiCheckingException

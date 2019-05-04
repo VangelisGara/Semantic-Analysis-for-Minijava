@@ -36,7 +36,8 @@ public class TypeCheck{
   }
 
   // Check if class has been declared
-  public void IsClassDeclared(String className){
+  public void IsClassDeclared(String className) throws StatiCheckingException
+  {
     if( !(ST.classes_data.containsKey(className)) )
       throw new StatiCheckingException("\n✗ There is no class object " + className + " in method " + this.currentMethod + " of class " + this.currentClass);
   }
@@ -73,9 +74,10 @@ public class TypeCheck{
     }
   }
 
-  // Check if not operation is allowed for the given clause
-  public void CheckNotOperation(String clause){
-    if(clause == "an integer" || clause == "this" || clause == "integer array" || clause == "class")
+  // Check if NOT operation is allowed for the given clause
+  public void CheckNotOperation(String clause) throws StatiCheckingException
+  {
+    if(clause == "an integer" || clause == "this" || clause == "integer array" || clause.startsWith("/") )
       throw new StatiCheckingException("\n✗ Illegal NOT operation in class " + this.currentClass + " of method " + this.currentMethod + ", clause must be of type boolean");
     if(clause != "boolean"){
       if( this.IsVarDeclared(clause) ){
@@ -91,6 +93,92 @@ public class TypeCheck{
         // check if type is boolean
         if(typeGotFromMethodVar != "boolean" && typeGotFromMethodArg != "boolean" &&  typeGotFromField != "boolean" && typeGotFromSuperField != "boolean")
           throw new StatiCheckingException("\n✗ Illegal NOT operation for clause " + clause + " in class " + this.currentClass + " of method" + this.currentMethod + ", clause must be of type boolean");
+      }
+    }
+  }
+
+  // Check if AND operation is allowed for the given clause
+  public void CheckAndOperation(String lClause,String rClause) throws StatiCheckingException
+  {
+    // check left clause
+    if(lClause == "an integer" || lClause == "this" || lClause == "integer array" || lClause.startsWith("/") )
+      throw new StatiCheckingException("\n✗ Illegal AND operation in class " + this.currentClass + " of method " + this.currentMethod + ", clause must be of type boolean");
+    if(lClause != "boolean"){
+      if( this.IsVarDeclared(lClause) ){
+        // get the type of the var
+        String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+        typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(lClause);
+        typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(lClause);
+        typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(lClause);
+        String superclass = ST.classes_data.get(currentClass).extendsFrom;
+        if(superclass != "")
+          typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(lClause);
+
+        // check if type is boolean
+        if(typeGotFromMethodVar != "boolean" && typeGotFromMethodArg != "boolean" &&  typeGotFromField != "boolean" && typeGotFromSuperField != "boolean")
+          throw new StatiCheckingException("\n✗ Illegal AND operation for clause " + lClause + " in class " + this.currentClass + " of method" + this.currentMethod + ", clause must be of type boolean");
+      }
+    }
+    // check right clause
+    if(rClause == "an integer" || rClause == "this" || rClause == "integer array" || rClause.startsWith("/") )
+      throw new StatiCheckingException("\n✗ Illegal AND operation in class " + this.currentClass + " of method " + this.currentMethod + ", clause must be of type boolean");
+    if(rClause != "boolean"){
+      if( this.IsVarDeclared(rClause) ){
+        // get the type of the var
+        String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+        typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(rClause);
+        typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(rClause);
+        typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(rClause);
+        String superclass = ST.classes_data.get(currentClass).extendsFrom;
+        if(superclass != "")
+          typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(rClause);
+
+        // check if type is boolean
+        if(typeGotFromMethodVar != "boolean" && typeGotFromMethodArg != "boolean" &&  typeGotFromField != "boolean" && typeGotFromSuperField != "boolean")
+          throw new StatiCheckingException("\n✗ Illegal AND operation for clause " + rClause + " in class " + this.currentClass + " of method" + this.currentMethod + ", clause must be of type boolean");
+      }
+    }
+
+  }
+
+  // Check if Compare Expression is allowed for the given primary expressions
+  public void CheckArithmeticExpression(String lPrimaryExpr,String rPrimaryExpr){
+    // check left primary expression
+    if(lPrimaryExpr == "boolean" || lPrimaryExpr == "this" || lPrimaryExpr == "integer array" || lPrimaryExpr.startsWith("/") )
+      throw new StatiCheckingException("\n✗ Illegal COMPARE operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
+    if(lPrimaryExpr != "an integer"){
+      if( this.IsVarDeclared(lPrimaryExpr) ){
+        // get the type of the var
+        String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+        typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(lPrimaryExpr);
+        typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(lPrimaryExpr);
+        typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(lPrimaryExpr);
+        String superclass = ST.classes_data.get(currentClass).extendsFrom;
+        if(superclass != "")
+          typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(lPrimaryExpr);
+
+        // check if type is boolean
+        if(typeGotFromMethodVar != "int" && typeGotFromMethodArg != "int" &&  typeGotFromField != "int" && typeGotFromSuperField != "int")
+          throw new StatiCheckingException("\n✗ Illegal COMPARE operation for expression " + lPrimaryExpr + " in class " + this.currentClass + " of method" + this.currentMethod + ", expression must be of type integer");
+      }
+    }
+    // check right primary expression
+    if(rPrimaryExpr == "boolean" || rPrimaryExpr == "this" || rPrimaryExpr == "integer array" || rPrimaryExpr.startsWith("/") )
+      throw new StatiCheckingException("\n✗ Illegal COMPARE operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
+    if(rPrimaryExpr != "an integer"){
+      if( this.IsVarDeclared(rPrimaryExpr) ){
+        // get the type of the var
+        String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+        typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(rPrimaryExpr);
+        typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(rPrimaryExpr);
+        typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(rPrimaryExpr);
+        String superclass = ST.classes_data.get(currentClass).extendsFrom;
+        if(superclass != "")
+          typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(rPrimaryExpr);
+
+        // check if type is boolean
+        if(typeGotFromMethodVar != "int" && typeGotFromMethodArg != "int" &&  typeGotFromField != "int" && typeGotFromSuperField != "int")
+          throw new StatiCheckingException("\n✗ Illegal COMPARE operation for expression " + rPrimaryExpr + " in class " + this.currentClass + " of method" + this.currentMethod + ", expression must be of type int");
       }
     }
   }

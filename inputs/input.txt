@@ -3,7 +3,9 @@ class Test {
     int x;
     int y;
     int z;
-    z = 5;
+    z = x*5;
+    x = y + z;
+    y = 10 - 3;
   }
 }
 
@@ -14,7 +16,8 @@ class Test2 {
   int l;
   public boolean TestMethod(Test q,int w, int e){
     x = new Test();
-    o = !!!false;
+    o = !!!true;
+    o = true&&o;
     return 0;
   }
 
@@ -23,7 +26,7 @@ class Test2 {
 class Test3 extends Test2{
   public boolean TestMethod(Test q,int w,int e){
     int y;
-    o = 4;
+    o = y < l;
     return 1;
   }
 }
