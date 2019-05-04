@@ -35,6 +35,14 @@ public class TypeCheck{
     return true;
   }
 
+  // Check if variable is an existing class
+  public String IsVarDeclaredClass(String var){
+    String type = GetVarType(var);
+    if( type == "int" || type == "int array" || type == "boolean" )
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
+    return type;
+  }
+
   // Check if class has been declared
   public void IsClassDeclared(String className) throws StatiCheckingException
   {
@@ -46,84 +54,52 @@ public class TypeCheck{
   public void IsVarArray(String var) throws StatiCheckingException
   {
     // get the type of the var
-    String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
-    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
-    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
-    typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
-    String superclass = ST.classes_data.get(currentClass).extendsFrom;
-    if(superclass != "")
-      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
-
+    String type = GetVarType(var);
     // check if type is int array
-    if(typeGotFromMethodVar != "int array" && typeGotFromMethodArg != "int array" &&  typeGotFromField != "int array" && typeGotFromSuperField != "int array")
-        throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't an int array");
+    if(type != "int array")
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't an int array");
   }
 
   // Check if variable is int
   public void IsVarInt(String var) throws StatiCheckingException
   {
-    // get the type of the var
-    String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
-    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
-    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
-    typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
-    String superclass = ST.classes_data.get(currentClass).extendsFrom;
-    if(superclass != "")
-      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
-
+    String type = GetVarType(var);
     // check if type is int
-    if(typeGotFromMethodVar != "int" && typeGotFromMethodArg != "int" &&  typeGotFromField != "int" && typeGotFromSuperField != "int")
+    if(type != "int" )
       throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't an int");
-  }
-
-  // Check if variable is an existing class
-  public String IsVarDeclaredClass(String var){
-    // get the type of the var
-    String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
-
-    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
-    if( typeGotFromMethodVar == "int" || typeGotFromMethodVar == "int array" || typeGotFromMethodVar == "boolean" )
-      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
-    if( typeGotFromMethodVar != null )
-      return typeGotFromMethodVar;
-
-    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
-    if( typeGotFromMethodArg == "int" || typeGotFromMethodArg == "int array" || typeGotFromMethodArg == "boolean" )
-      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
-    if( typeGotFromMethodArg != null )
-      return typeGotFromMethodArg;
-
-    typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
-    if( typeGotFromField == "int" || typeGotFromField == "int array" || typeGotFromField == "boolean" )
-      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
-    if( typeGotFromField != null )
-      return typeGotFromField;
-
-    String superclass = ST.classes_data.get(currentClass).extendsFrom;
-    if(superclass != "")
-      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
-    if( typeGotFromSuperField == "int" || typeGotFromSuperField == "int array" || typeGotFromSuperField == "boolean" )
-      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
-    if( typeGotFromSuperField != null )
-      return typeGotFromSuperField;
-
-    return "error";
   }
 
   // Check if variable is a boolean
   public void IsVarBoolean(String var) throws StatiCheckingException
   {
-    // get the type of the var
+    String type = GetVarType(var);
+    // check if type is boolean
+    if(type != "boolean")
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't a boolean");
+  }
+
+  // Return given variable's type
+  public String GetVarType(String var){
+    IsVarDeclared(var);
     String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
     typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
+    if(typeGotFromMethodVar != null)
+      return typeGotFromMethodVar;
+
     typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
+    if(typeGotFromMethodArg != null)
+      return typeGotFromMethodArg;
+
     typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
+    if(typeGotFromField != null)
+      return typeGotFromField;
+
     String superclass = ST.classes_data.get(currentClass).extendsFrom;
     if(superclass != "")
       typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
-    // check if type is boolean
-    if(typeGotFromMethodVar != "boolean" && typeGotFromMethodArg != "boolean" &&  typeGotFromField != "boolean" && typeGotFromSuperField != "boolean")
-      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't a boolean");
+    if(typeGotFromSuperField != null)
+      return typeGotFromSuperField;
+    return "error";
   }
 
   // Check that type is allowed
@@ -234,7 +210,7 @@ public class TypeCheck{
   }
 
   // Check if class given contains the method given
-  public void DoesClassContainMethod(String expr,String MethodName){
+  public String DoesClassContainMethod(String expr,String MethodName){
     // get the class which method is called from
     String whichClass;
     if(expr == "this")
@@ -245,11 +221,11 @@ public class TypeCheck{
       whichClass = this.IsVarDeclaredClass(expr);
     // check if method exists in that class
     if( ST.classes_data.get(whichClass).methods_data.containsKey(MethodName) )
-      return;
+      return ST.classes_data.get(whichClass).methods_data.get(MethodName).type;
     String superclass = ST.classes_data.get(whichClass).extendsFrom;
     if(superclass != "")
       if( ST.classes_data.get(superclass).methods_data.containsKey(MethodName) )
-        return;
+        return ST.classes_data.get(superclass).methods_data.get(MethodName).type;
     throw new StatiCheckingException("\n✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
 
   }

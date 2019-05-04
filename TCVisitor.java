@@ -90,6 +90,20 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "TypeVisited";
   }
 
+  public String visit(Expression n, String argu){
+    String gotFromExpression =  n.f0.accept(this, argu);
+    String type = gotFromExpression;
+    // if expression returns a string starting with "/", then a new allocation expression occured of type /<type>
+    if(gotFromExpression.startsWith("/"))
+      type = gotFromExpression.substring(1);
+    // if expression returns an intetifier
+    if( !gotFromExpression.startsWith("/") && gotFromExpression != "int" && gotFromExpression != "boolean" && gotFromExpression != "int array" && !(TC.ST.classes_data.containsKey(gotFromExpression)) ){
+      type = TC.GetVarType(gotFromExpression);
+    }
+    System.out.println(type);
+    return type;
+  }
+
   public String visit(AndExpression n,String argu) throws StatiCheckingException
   {
     //System.out.println("We are in AndExpression");
@@ -161,10 +175,10 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     String callFrom = n.f0.accept(this,null);
     TC.CanBeCalled(callFrom);
     String method = n.f2.accept(this,null);
-    TC.DoesClassContainMethod(callFrom,method);
+    String methodType = TC.DoesClassContainMethod(callFrom,method);
     // Visit EpxressionList
     n.f4.accept(this,null);
-    return "tha doume";
+    return methodType;
   }
 
   public String visit(IntegerLiteral n, String argu) {
