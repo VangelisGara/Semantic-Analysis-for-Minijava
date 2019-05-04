@@ -116,7 +116,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     leftPrimaryExpr = n.f0.accept(this,null);
     rightPrimaryExpr = n.f2.accept(this,null);
     TC.CheckArithmeticExpression(leftPrimaryExpr,rightPrimaryExpr);
-    return "an integer";
+    return "int";
   }
 
   public String visit(MinusExpression n, String argu) throws StatiCheckingException
@@ -126,7 +126,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     leftPrimaryExpr = n.f0.accept(this,null);
     rightPrimaryExpr = n.f2.accept(this,null);
     TC.CheckArithmeticExpression(leftPrimaryExpr,rightPrimaryExpr);
-    return "an integer";
+    return "int";
   }
 
   public String visit(TimesExpression n, String argu) throws StatiCheckingException
@@ -136,7 +136,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     leftPrimaryExpr = n.f0.accept(this,null);
     rightPrimaryExpr = n.f2.accept(this,null);
     TC.CheckArithmeticExpression(leftPrimaryExpr,rightPrimaryExpr);
-    return "an integer";
+    return "int";
   }
 
   public String visit(ArrayLookup n,String argu) throws StatiCheckingException
@@ -145,7 +145,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     String theArray = n.f0.accept(this,null);
     String theIndex = n.f2.accept(this,null);
     TC.CheckArrayLookUp(theArray,theIndex);
-    return "tha doume";
+    return "int";
   }
 
   public String visit(ArrayLength n,String argu) throws StatiCheckingException
@@ -153,11 +153,11 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     //System.out.println("We are in ArrayLookup");
     String theArray = n.f0.accept(this,null);
     TC.CheckArrayLength(theArray);
-    return "tha doume";
+    return "int";
   }
 
   public String visit(IntegerLiteral n, String argu) {
-     return "an integer";
+     return "int";
   }
 
   public String visit(TrueLiteral n, String argu) {
@@ -177,7 +177,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(ArrayAllocationExpression n, String argu) {
-    return "integer array";
+    return "new int array";
   }
 
   public String visit(AllocationExpression n, String argu) throws StatiCheckingException
@@ -202,7 +202,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(ArrayType n, String argu) {
-    return "Int Array";
+    return "int array";
   }
 
   public String visit(BooleanType n, String argu){

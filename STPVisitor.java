@@ -121,7 +121,7 @@ public class STPVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(ArrayType n, String argu) {
-    return "Int Array";
+    return "int array";
   }
 
   public String visit(BooleanType n, String argu){
