@@ -2,10 +2,12 @@ class Test {
   public static void main(String[] args) {
     int x;
     int y;
+    Test3 k;
     int z;
     z = x*5;
     x = y + z;
     y = 10 - 3;
+    x = k.TestMethod1();
   }
 }
 
@@ -14,11 +16,17 @@ class Test2 {
   Test3 y;
   boolean o;
   int l;
+
   public boolean TestMethod(Test q,int w,boolean e){
     x = new Test();
     o = !!!o;
     o = false&&o;
     w = x[4];
+    e = this.TestMethod();
+    return 0;
+  }
+
+  public int TestMethod1(){
     return 0;
   }
 
@@ -30,7 +38,7 @@ class Test3 extends Test2{
     o = 2 < l;
     l = new int[42];
     y = x.length;
-    i = this.TestMethod();
+    i = this.TestMethod1();
     return 1;
   }
 }

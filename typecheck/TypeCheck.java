@@ -76,6 +76,40 @@ public class TypeCheck{
       throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't an int");
   }
 
+  // Check if variable is an existing class
+  public String IsVarDeclaredClass(String var){
+    // get the type of the var
+    String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+
+    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
+    if( typeGotFromMethodVar == "int" || typeGotFromMethodVar == "int array" || typeGotFromMethodVar == "boolean" )
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
+    if( typeGotFromMethodVar != null )
+      return typeGotFromMethodVar;
+
+    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
+    if( typeGotFromMethodArg == "int" || typeGotFromMethodArg == "int array" || typeGotFromMethodArg == "boolean" )
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
+    if( typeGotFromMethodArg != null )
+      return typeGotFromMethodArg;
+
+    typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
+    if( typeGotFromField == "int" || typeGotFromField == "int array" || typeGotFromField == "boolean" )
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
+    if( typeGotFromField != null )
+      return typeGotFromField;
+
+    String superclass = ST.classes_data.get(currentClass).extendsFrom;
+    if(superclass != "")
+      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
+    if( typeGotFromSuperField == "int" || typeGotFromSuperField == "int array" || typeGotFromSuperField == "boolean" )
+      throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
+    if( typeGotFromSuperField != null )
+      return typeGotFromSuperField;
+
+    return "error";
+  }
+
   // Check if variable is a boolean
   public void IsVarBoolean(String var) throws StatiCheckingException
   {
@@ -87,7 +121,6 @@ public class TypeCheck{
     String superclass = ST.classes_data.get(currentClass).extendsFrom;
     if(superclass != "")
       typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
-
     // check if type is boolean
     if(typeGotFromMethodVar != "boolean" && typeGotFromMethodArg != "boolean" &&  typeGotFromField != "boolean" && typeGotFromSuperField != "boolean")
       throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't a boolean");
@@ -187,6 +220,38 @@ public class TypeCheck{
       this.IsVarDeclared(Arr);
       this.IsVarArray(Arr);
     }
+  }
+
+  // Check if a method can be called from primary expression specified
+  public void CanBeCalled(String expr) throws StatiCheckingException
+  {
+    if(expr == "this" || expr.startsWith("/"))
+      return;
+    if( expr == "boolean" || expr == "int" || expr == "int array" )
+      throw new StatiCheckingException("\n✗ Function call in class " + this.currentClass + " of method " + this.currentMethod + ", cannot be called by a non class object");
+    IsVarDeclared(expr);
+    IsVarDeclaredClass(expr);
+  }
+
+  // Check if class given contains the method given
+  public void DoesClassContainMethod(String expr,String MethodName){
+    // get the class which method is called from
+    String whichClass;
+    if(expr == "this")
+      whichClass = currentClass;
+    else if(expr.startsWith("/"))
+      whichClass = expr.substring(1);
+    else
+      whichClass = this.IsVarDeclaredClass(expr);
+    // check if method exists in that class
+    if( ST.classes_data.get(whichClass).methods_data.containsKey(MethodName) )
+      return;
+    String superclass = ST.classes_data.get(whichClass).extendsFrom;
+    if(superclass != "")
+      if( ST.classes_data.get(superclass).methods_data.containsKey(MethodName) )
+        return;
+    throw new StatiCheckingException("\n✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
+
   }
 
 }

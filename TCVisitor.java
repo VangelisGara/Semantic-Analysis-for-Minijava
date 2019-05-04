@@ -159,7 +159,9 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   public String visit(MessageSend n,String argu) throws StatiCheckingException
   {
     String callFrom = n.f0.accept(this,null);
+    TC.CanBeCalled(callFrom);
     String method = n.f2.accept(this,null);
+    TC.DoesClassContainMethod(callFrom,method);
     // Visit EpxressionList
     n.f4.accept(this,null);
     return "tha doume";
@@ -195,7 +197,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     String classObj = n.f1.accept(this,null);
     TC.IsClassDeclared(classObj);
     // add special characters, so we can now that a primary expression if an allocation expression
-    return "/" + classObj + "/";
+    return "/" + classObj;
   }
 
   public String visit(NotExpression n, String argu) throws StatiCheckingException
