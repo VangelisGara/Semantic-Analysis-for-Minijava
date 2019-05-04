@@ -14,21 +14,23 @@ class Test2 {
   Test3 y;
   boolean o;
   int l;
-  public boolean TestMethod(Test q,int w, int e){
+  public boolean TestMethod(Test q,int w,boolean e){
     x = new Test();
     o = !!!o;
     o = false&&o;
+    w = x[4];
     return 0;
   }
 
 }
 
 class Test3 extends Test2{
-  public boolean TestMethod(Test q,int w,int e){
+  public boolean TestMethod(Test q,int z,boolean i){
     int y;
     o = 2 < l;
-    l = x[42];
+    l = new int[42];
     y = x.length;
+    i = this.TestMethod();
     return 1;
   }
 }

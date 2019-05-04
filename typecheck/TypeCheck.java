@@ -111,7 +111,7 @@ public class TypeCheck{
   // Check if NOT operation is allowed for the given clause
   public void CheckNotOperation(String clause) throws StatiCheckingException
   {
-    if(clause == "int" || clause == "this" || clause == "new int array" || clause.startsWith("/") )
+    if(clause == "int" || clause == "this" || clause == "int array" || clause.startsWith("/") )
       throw new StatiCheckingException("\n✗ Illegal NOT operation in class " + this.currentClass + " of method " + this.currentMethod + ", clause must be of type boolean");
     if(clause != "boolean"){
       this.IsVarDeclared(clause);
@@ -142,7 +142,7 @@ public class TypeCheck{
   public void CheckArithmeticExpression(String lPrimaryExpr,String rPrimaryExpr) throws StatiCheckingException
   {
     // check left primary expression
-    if(lPrimaryExpr == "boolean" || lPrimaryExpr == "this" || lPrimaryExpr == "new int array" || lPrimaryExpr.startsWith("/") )
+    if(lPrimaryExpr == "boolean" || lPrimaryExpr == "this" || lPrimaryExpr == "int array" || lPrimaryExpr.startsWith("/") )
       throw new StatiCheckingException("\n✗ Illegal COMPARE operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
     if(lPrimaryExpr != "int"){
       this.IsVarDeclared(lPrimaryExpr);
@@ -162,10 +162,12 @@ public class TypeCheck{
   public void CheckArrayLookUp(String Arr,String Index) throws StatiCheckingException
   {
     // check if the first expr is an array
-    if(Arr == "boolean" || Arr == "this" || Arr == "new int array" || Arr.startsWith("/") || Arr == "int" )
-      throw new StatiCheckingException("\n✗ Illegal array look in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
-    this.IsVarDeclared(Arr);
-    this.IsVarArray(Arr);
+    if(Arr == "boolean" || Arr == "this" || Arr.startsWith("/") || Arr == "int" )
+      throw new StatiCheckingException("\n✗ Illegal array look up in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
+    if(Arr != "int array"){
+      this.IsVarDeclared(Arr);
+      this.IsVarArray(Arr);
+    }
     // check if the  index is int
     if(Index == "boolean" || Index == "this" || Index == "int array" || Index.startsWith("/") )
       throw new StatiCheckingException("\n✗ Illegal array look up in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
@@ -175,14 +177,16 @@ public class TypeCheck{
     }
   }
 
-  // Check if the array lookup operation is legal
+  // Check if the array length operation is legal
   public void CheckArrayLength(String Arr) throws StatiCheckingException
   {
     // check if the first expr is an array
-    if(Arr == "boolean" || Arr == "this" || Arr == "new int array" || Arr.startsWith("/") || Arr == "int" )
-      throw new StatiCheckingException("\n✗ Illegal array look in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
-    this.IsVarDeclared(Arr);
-    this.IsVarArray(Arr);
+    if(Arr == "boolean" || Arr == "this" || Arr.startsWith("/") || Arr == "int" )
+      throw new StatiCheckingException("\n✗ Illegal array length operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
+    if(Arr != "int array"){
+      this.IsVarDeclared(Arr);
+      this.IsVarArray(Arr);
+    }
   }
 
 }

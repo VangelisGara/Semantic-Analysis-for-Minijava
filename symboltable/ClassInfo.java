@@ -35,7 +35,9 @@ public class ClassInfo {
           throw new StatiCheckingException("\n✗ Methods " + MethodsName + " return type in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
 
         // check for the arguments of the polymorphed function
-        if( !(superclass.methods_data.get(MethodsName).arguments_data.equals(methods_data.get(MethodsName).arguments_data)) )
+        Set<String> superclass_args_types = new HashSet<>(superclass.methods_data.get(MethodsName).arguments_data.values());
+        Set<String> derived_args_types = new HashSet<>(methods_data.get(MethodsName).arguments_data.values());
+        if( !(superclass_args_types.equals(derived_args_types)) )
           throw new StatiCheckingException("\n✗ Methods " + MethodsName + " arguments in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
       }
     }

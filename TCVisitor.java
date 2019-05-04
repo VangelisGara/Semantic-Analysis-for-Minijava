@@ -156,6 +156,15 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "int";
   }
 
+  public String visit(MessageSend n,String argu) throws StatiCheckingException
+  {
+    String callFrom = n.f0.accept(this,null);
+    String method = n.f2.accept(this,null);
+    // Visit EpxressionList
+    n.f4.accept(this,null);
+    return "tha doume";
+  }
+
   public String visit(IntegerLiteral n, String argu) {
      return "int";
   }
@@ -177,7 +186,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(ArrayAllocationExpression n, String argu) {
-    return "new int array";
+    return "int array";
   }
 
   public String visit(AllocationExpression n, String argu) throws StatiCheckingException
