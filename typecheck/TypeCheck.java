@@ -50,6 +50,30 @@ public class TypeCheck{
       throw new StatiCheckingException("\n✗ There is no class object " + className + " in method " + this.currentMethod + " of class " + this.currentClass);
   }
 
+  // Return given variable's type
+  public String GetVarType(String var){
+    IsVarDeclared(var);
+    String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
+    if(typeGotFromMethodVar != null)
+      return typeGotFromMethodVar;
+
+    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
+    if(typeGotFromMethodArg != null)
+      return typeGotFromMethodArg;
+
+    typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
+    if(typeGotFromField != null)
+      return typeGotFromField;
+
+    String superclass = ST.classes_data.get(currentClass).extendsFrom;
+    if(superclass != "")
+      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
+    if(typeGotFromSuperField != null)
+      return typeGotFromSuperField;
+    return "error";
+  }
+
   // Check if variable is an array
   public void IsVarArray(String var) throws StatiCheckingException
   {
@@ -76,30 +100,6 @@ public class TypeCheck{
     // check if type is boolean
     if(type != "boolean")
       throw new StatiCheckingException("\n✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " isn't a boolean");
-  }
-
-  // Return given variable's type
-  public String GetVarType(String var){
-    IsVarDeclared(var);
-    String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
-    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
-    if(typeGotFromMethodVar != null)
-      return typeGotFromMethodVar;
-
-    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
-    if(typeGotFromMethodArg != null)
-      return typeGotFromMethodArg;
-
-    typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
-    if(typeGotFromField != null)
-      return typeGotFromField;
-
-    String superclass = ST.classes_data.get(currentClass).extendsFrom;
-    if(superclass != "")
-      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
-    if(typeGotFromSuperField != null)
-      return typeGotFromSuperField;
-    return "error";
   }
 
   // Check that type is allowed
