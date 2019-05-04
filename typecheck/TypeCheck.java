@@ -142,7 +142,8 @@ public class TypeCheck{
   }
 
   // Check if Compare Expression is allowed for the given primary expressions
-  public void CheckArithmeticExpression(String lPrimaryExpr,String rPrimaryExpr){
+  public void CheckArithmeticExpression(String lPrimaryExpr,String rPrimaryExpr) throws StatiCheckingException
+  {
     // check left primary expression
     if(lPrimaryExpr == "boolean" || lPrimaryExpr == "this" || lPrimaryExpr == "integer array" || lPrimaryExpr.startsWith("/") )
       throw new StatiCheckingException("\n✗ Illegal COMPARE operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
@@ -181,6 +182,45 @@ public class TypeCheck{
           throw new StatiCheckingException("\n✗ Illegal COMPARE operation for expression " + rPrimaryExpr + " in class " + this.currentClass + " of method" + this.currentMethod + ", expression must be of type int");
       }
     }
+  }
+
+  // Check if the array lookup operation is legal
+  public void CheckArrayLookUp(String Arr,String Index) throws StatiCheckingException
+  {
+    // check if the first expr is an array
+    if(Arr == "boolean" || Arr == "this" || Arr == "integer array" || Arr.startsWith("/") || Arr == "an integer" )
+      throw new StatiCheckingException("\n✗ Illegal array look in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
+    this.IsVarDeclared(Arr);
+    this.IsVarArray(Arr);
+    // check if the  index is an integer
+    if(Index == "boolean" || Index == "this" || Index == "integer array" || Index.startsWith("/") )
+      throw new StatiCheckingException("\n✗ Illegal array look up in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
+    if(Index != "an integer"){
+      if( this.IsVarDeclared(Index) ){
+        // get the type of the var
+        String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
+        typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(Index);
+        typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(Index);
+        typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(Index);
+        String superclass = ST.classes_data.get(currentClass).extendsFrom;
+        if(superclass != "")
+          typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(Index);
+
+        // check if type is boolean
+        if(typeGotFromMethodVar != "int" && typeGotFromMethodArg != "int" &&  typeGotFromField != "int" && typeGotFromSuperField != "int")
+          throw new StatiCheckingException("\n✗ Illegal array look up for expression " + Index + " in class " + this.currentClass + " of method" + this.currentMethod + ", expression must be of type integer");
+      }
+    }
+  }
+
+  // Check if the array lookup operation is legal
+  public void CheckArrayLength(String Arr) throws StatiCheckingException
+  {
+    // check if the first expr is an array
+    if(Arr == "boolean" || Arr == "this" || Arr == "integer array" || Arr.startsWith("/") || Arr == "an integer" )
+      throw new StatiCheckingException("\n✗ Illegal array look in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
+    this.IsVarDeclared(Arr);
+    this.IsVarArray(Arr);
   }
 
 }

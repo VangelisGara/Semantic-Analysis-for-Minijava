@@ -139,6 +139,23 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "an integer";
   }
 
+  public String visit(ArrayLookup n,String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in ArrayLookup");
+    String theArray = n.f0.accept(this,null);
+    String theIndex = n.f2.accept(this,null);
+    TC.CheckArrayLookUp(theArray,theIndex);
+    return "tha doume";
+  }
+
+  public String visit(ArrayLength n,String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in ArrayLookup");
+    String theArray = n.f0.accept(this,null);
+    TC.CheckArrayLength(theArray);
+    return "tha doume";
+  }
+
   public String visit(IntegerLiteral n, String argu) {
      return "an integer";
   }

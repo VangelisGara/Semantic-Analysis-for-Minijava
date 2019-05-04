@@ -27,6 +27,8 @@ class Test3 extends Test2{
   public boolean TestMethod(Test q,int w,int e){
     int y;
     o = y < l;
+    l = x[42];
+    y = x.length;
     return 1;
   }
 }
