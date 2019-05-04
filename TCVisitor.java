@@ -3,12 +3,15 @@ import visitor.GJDepthFirst;
 import symboltable.*;
 import typecheck.*;
 import staticheckingexception.*;
+import java.util.*;
 
 public class TCVisitor extends GJDepthFirst <String,String> {
   TypeCheck TC; // our type checker
+  LinkedHashSet<String> parameters_given;
 
   TCVisitor(SymbolTable symbolTable){
     TC = new TypeCheck(symbolTable);
+    parameters_given= new LinkedHashSet<String>();
   }
 
   public String visit(MainClass n,String argu) {
@@ -100,7 +103,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     if( !gotFromExpression.startsWith("/") && gotFromExpression != "int" && gotFromExpression != "boolean" && gotFromExpression != "int array" && !(TC.ST.classes_data.containsKey(gotFromExpression)) ){
       type = TC.GetVarType(gotFromExpression);
     }
-    System.out.println(type);
+    //System.out.println(type);
     return type;
   }
 
@@ -172,13 +175,30 @@ public class TCVisitor extends GJDepthFirst <String,String> {
 
   public String visit(MessageSend n,String argu) throws StatiCheckingException
   {
+    //System.out.println("We are in MessageSend");
+    parameters_given.clear();
     String callFrom = n.f0.accept(this,null);
-    TC.CanBeCalled(callFrom);
     String method = n.f2.accept(this,null);
-    String methodType = TC.DoesClassContainMethod(callFrom,method);
     // Visit EpxressionList
     n.f4.accept(this,null);
+    String methodType = TC.CheckMessageSend(callFrom,method,parameters_given);
     return methodType;
+  }
+
+  public String visit(ExpressionList n, String argu) {
+    //System.out.println("We are in ExpressionList");
+    String firstParameter = n.f0.accept(this,argu);
+    parameters_given.add(firstParameter);
+    // Visit ExpressionTail
+    n.f1.accept(this,null);
+    return "expressionlistvisited";
+  }
+
+  public String visit(ExpressionTerm n, String argu) {
+    //System.out.println("We are in ExpressionTerm");
+    String anotherParameter = n.f1.accept(this,null);
+    parameters_given.add(anotherParameter);
+    return "ExpressionTermvisited";
   }
 
   public String visit(IntegerLiteral n, String argu) {
@@ -228,6 +248,10 @@ public class TCVisitor extends GJDepthFirst <String,String> {
 
   public String visit(ArrayType n, String argu) {
     return "int array";
+  }
+
+  public String visit(BracketExpression n, String argu) {
+    return n.f1.accept(this,null);
   }
 
   public String visit(BooleanType n, String argu){

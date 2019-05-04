@@ -21,9 +21,9 @@ class Test2 {
   public boolean TestMethod(Test q,int w,boolean e){
     x = new Test();
     o = !!!o;
-    o = false&&o;
+    o = false && true;
     w = x[4];
-    e = this.TestMethod();
+    e = this.TestMethod(new Test(),o,y.TestMethod(q,w,y.TestMethod(q,w,e)));
     return 0;
   }
 
@@ -35,12 +35,13 @@ class Test2 {
 
 class Test3 extends Test2{
   public boolean TestMethod(Test q,int z,boolean i){
-    int y;
+    boolean e;
     o = 2 < l;
     l = new int[42];
     y = x.length;
-    i = this.TestMethod1();
+    i = this.TestMethod(q,z,i);
     l = o;
+    i = !(this.TestMethod(((new Test())),l,e));
     l = q;
     return 1;
   }

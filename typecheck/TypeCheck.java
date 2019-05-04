@@ -1,6 +1,7 @@
 package typecheck;
 import symboltable.*;
 import staticheckingexception.*;
+import java.util.*;
 
 public class TypeCheck{
   public SymbolTable ST;
@@ -120,7 +121,7 @@ public class TypeCheck{
   // Check if NOT operation is allowed for the given clause
   public void CheckNotOperation(String clause) throws StatiCheckingException
   {
-    if(clause == "int" || clause == "this" || clause == "int array" || clause.startsWith("/") )
+    if(clause == "int" || clause == "this" || clause == "int array" || clause.startsWith("/") || ST.classes_data.containsKey(clause) )
       throw new StatiCheckingException("\n✗ Illegal NOT operation in class " + this.currentClass + " of method " + this.currentMethod + ", clause must be of type boolean");
     if(clause != "boolean"){
       this.IsVarDeclared(clause);
@@ -132,14 +133,14 @@ public class TypeCheck{
   public void CheckAndOperation(String lClause,String rClause) throws StatiCheckingException
   {
     // check left clause
-    if(lClause == "int" || lClause == "this" || lClause == "int array" || lClause.startsWith("/") )
+    if(lClause == "int" || lClause == "this" || lClause == "int array" || lClause.startsWith("/") || ST.classes_data.containsKey(lClause) )
       throw new StatiCheckingException("\n✗ Illegal AND operation in class " + this.currentClass + " of method " + this.currentMethod + ", clause must be of type boolean");
     if(lClause != "boolean"){
       this.IsVarDeclared(lClause);
       this.IsVarBoolean(lClause);
     }
     // check right clause
-    if(rClause == "int" || rClause == "this" || rClause == "int array" || rClause.startsWith("/") )
+    if(rClause == "int" || rClause == "this" || rClause == "int array" || rClause.startsWith("/") || ST.classes_data.containsKey(rClause))
       throw new StatiCheckingException("\n✗ Illegal AND operation in class " + this.currentClass + " of method " + this.currentMethod + ", clause must be of type boolean");
     if(rClause != "boolean"){
       this.IsVarDeclared(rClause);
@@ -151,7 +152,7 @@ public class TypeCheck{
   public void CheckArithmeticExpression(String lPrimaryExpr,String rPrimaryExpr) throws StatiCheckingException
   {
     // check left primary expression
-    if(lPrimaryExpr == "boolean" || lPrimaryExpr == "this" || lPrimaryExpr == "int array" || lPrimaryExpr.startsWith("/") )
+    if(lPrimaryExpr == "boolean" || lPrimaryExpr == "this" || lPrimaryExpr == "int array" || lPrimaryExpr.startsWith("/") || ST.classes_data.containsKey(lPrimaryExpr) )
       throw new StatiCheckingException("\n✗ Illegal COMPARE operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
     if(lPrimaryExpr != "int"){
       this.IsVarDeclared(lPrimaryExpr);
@@ -159,7 +160,7 @@ public class TypeCheck{
     }
 
     // check right primary expression
-    if(rPrimaryExpr == "boolean" || rPrimaryExpr == "this" || rPrimaryExpr == "int array" || rPrimaryExpr.startsWith("/") )
+    if(rPrimaryExpr == "boolean" || rPrimaryExpr == "this" || rPrimaryExpr == "int array" || rPrimaryExpr.startsWith("/") || ST.classes_data.containsKey(rPrimaryExpr) )
       throw new StatiCheckingException("\n✗ Illegal COMPARE operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type int");
     if(rPrimaryExpr != "int"){
       this.IsVarDeclared(rPrimaryExpr);
@@ -171,7 +172,7 @@ public class TypeCheck{
   public void CheckArrayLookUp(String Arr,String Index) throws StatiCheckingException
   {
     // check if the first expr is an array
-    if(Arr == "boolean" || Arr == "this" || Arr.startsWith("/") || Arr == "int" )
+    if(Arr == "boolean" || Arr == "this" || Arr.startsWith("/") || Arr == "int" || ST.classes_data.containsKey(Arr) )
       throw new StatiCheckingException("\n✗ Illegal array look up in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
     if(Arr != "int array"){
       this.IsVarDeclared(Arr);
@@ -190,7 +191,7 @@ public class TypeCheck{
   public void CheckArrayLength(String Arr) throws StatiCheckingException
   {
     // check if the first expr is an array
-    if(Arr == "boolean" || Arr == "this" || Arr.startsWith("/") || Arr == "int" )
+    if(Arr == "boolean" || Arr == "this" || Arr.startsWith("/") || Arr == "int" || ST.classes_data.containsKey(Arr) )
       throw new StatiCheckingException("\n✗ Illegal array length operation in class " + this.currentClass + " of method " + this.currentMethod + ", expression must be of type array");
     if(Arr != "int array"){
       this.IsVarDeclared(Arr);
@@ -210,24 +211,54 @@ public class TypeCheck{
   }
 
   // Check if class given contains the method given
-  public String DoesClassContainMethod(String expr,String MethodName){
+  public String CheckMessageSend(String callFrom,String MethodName,LinkedHashSet<String> params_given){
+    // Firstly check if we can call for
+    CanBeCalled(callFrom);
     // get the class which method is called from
     String whichClass;
-    if(expr == "this")
+    if(callFrom == "this")
       whichClass = currentClass;
-    else if(expr.startsWith("/"))
-      whichClass = expr.substring(1);
+    else if(callFrom.startsWith("/"))
+      whichClass = callFrom.substring(1);
     else
-      whichClass = this.IsVarDeclaredClass(expr);
-    // check if method exists in that class
-    if( ST.classes_data.get(whichClass).methods_data.containsKey(MethodName) )
-      return ST.classes_data.get(whichClass).methods_data.get(MethodName).type;
+      whichClass = this.IsVarDeclaredClass(callFrom);
+    // check if method exists in method, check arguments and get type
+    String type;
     String superclass = ST.classes_data.get(whichClass).extendsFrom;
-    if(superclass != "")
-      if( ST.classes_data.get(superclass).methods_data.containsKey(MethodName) )
-        return ST.classes_data.get(superclass).methods_data.get(MethodName).type;
-    throw new StatiCheckingException("\n✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
+    Set<String> method_args_types;
+    if( ST.classes_data.get(whichClass).methods_data.containsKey(MethodName) ){
+      type = ST.classes_data.get(whichClass).methods_data.get(MethodName).type;
+      method_args_types = new LinkedHashSet<>(ST.classes_data.get(whichClass).methods_data.get(MethodName).arguments_data.values());
+    }
+    else if(superclass != ""){
+        if( ST.classes_data.get(superclass).methods_data.containsKey(MethodName) ){
+          type = ST.classes_data.get(superclass).methods_data.get(MethodName).type;
+          method_args_types = new LinkedHashSet<>(ST.classes_data.get(superclass).methods_data.get(MethodName).arguments_data.values());
+        }
+        else
+          throw new StatiCheckingException("\n✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
 
+    }
+    else
+      throw new StatiCheckingException("\n✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
+    /*
+    System.out.println("How they were declared");
+    Iterator<String> i=method_args_types.iterator();
+    while(i.hasNext())
+    {
+    System.out.println(i.next());
+    }
+
+    System.out.println("Parameters Given");
+    Iterator<String> j=params_given.iterator();
+    while(j.hasNext())
+    {
+    System.out.println(j.next());
+    }
+    */
+    if( !(method_args_types.equals(params_given)) )
+      throw new StatiCheckingException("\n✗ Parameters aren't the same type, as declared, in method " + MethodName + " of class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
+    return type;
   }
 
 }
