@@ -247,12 +247,23 @@ public class TypeCheck{
     while(j.hasNext())
     {
     System.out.println(j.next());
-    }
-    */
+    }*/
+    // Check if the number of parameters given is the same with method's declared number of parameters
+    // Check for number of params given
     if( method_args_types.size() != params_given.size() )
       throw new StatiCheckingException("\n     ✗ Parameters aren't the same type, as declared, in method " + MethodName + " of class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
-    if( !(method_args_types.equals(params_given)) )
-      throw new StatiCheckingException("\n     ✗ Parameters aren't the same type, as declared, in method " + MethodName + " of class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
+    // Check for type equality
+    for(int i=0; i <method_args_types.size(); i++){
+      if( !(method_args_types.get(i).equals(params_given.get(i))) ){
+        // if type of expr is a class
+        if( ST.classes_data.containsKey(params_given.get(i)) ){
+          // check if that class derives from a class with same type of destination's type
+          superclass = ST.classes_data.get(params_given.get(i)).extendsFrom;
+          if( !(method_args_types.get(i).equals(superclass)) )
+            throw new StatiCheckingException("\n     ✗ Parameters aren't the same type, as declared, in method " + MethodName + " of class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
+        }
+      }
+    }
     return type;
   }
 
@@ -269,8 +280,11 @@ public class TypeCheck{
   public void CheckTypeCompatibility(String Dest,String typeOfExpr) throws StatiCheckingException
   {
     String DestType = GetVarType(Dest);
-    if( !(DestType.equals(typeOfExpr)) )
-      throw new StatiCheckingException("\n     ✗ Illegal ASSIGN operation, trying to assign type " + typeOfExpr + " to variable of type " + DestType + " in method " + this.currentMethod + " of class " + this.currentClass);
+    if( !(DestType.equals(typeOfExpr)) ){
+      String superclass = ST.classes_data.get(typeOfExpr).extendsFrom;
+      if( !(superclass.equals(DestType)) )
+        throw new StatiCheckingException("\n     ✗ Illegal ASSIGN operation, trying to assign type " + typeOfExpr + " to variable of type " + DestType + " in method " + this.currentMethod + " of class " + this.currentClass);
+    }
   }
 
   // Check array assignment operation

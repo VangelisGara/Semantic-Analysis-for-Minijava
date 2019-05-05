@@ -5,8 +5,13 @@ class A {
 }
 
 class B {
-  public int m(boolean v,int c){
+  int k;
+  public int m(boolean v,int c,B l){
     return 2;
+  }
+
+  public boolean t(){
+    return true;
   }
 }
 
@@ -15,7 +20,7 @@ class C extends B {
   int[] y;
   boolean z;
 
-  public int m(boolean i,int j){
+  public int m(boolean i,int j,B l){
     i = z;
     if( z && i )
       z = i;
@@ -25,11 +30,24 @@ class C extends B {
   }
 
   public int n(int u){
+    B b;
     y[x] = y[u];
     x = y.length;
     while(u < 10){
-      u = this.m(false,this.m(z,3));
+      u = this.m(new C().t(),4,new D());
     }
     return 1;
+  }
+}
+
+class D extends B {
+  D x;
+  C y;
+  B z;
+
+  public int mn(){
+    z = y;
+    k = y.m(true,7,y);
+    return 2;
   }
 }
