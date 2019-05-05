@@ -41,6 +41,7 @@ class Test2 {
         o = !o;
       }
     }
+    System.out.println(o);
     return p;
   }
 
@@ -50,7 +51,7 @@ class Test3 extends Test2{
   public boolean TestMethod(Test q,int z,boolean i){
     boolean e;
     o = 2 < l;
-    x = new int[42];
+    x = new int[z];
     l = x.length;
     i = this.TestMethod(q,z,i);
     i = !o;

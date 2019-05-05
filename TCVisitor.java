@@ -104,14 +104,23 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "IfVisited";
   }
 
-  public String visit(WhileStatement n, String argu) {
+  public String visit(WhileStatement n, String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in WhileStatement");
     String conditionType = n.f2.accept(this,null);
     TC.CheckConditionType(conditionType);
     // Visit statement of if
     n.f4.accept(this,null);
     return "WhileStatementVisited";
-}
+  }
+
+  public String visit(PrintStatement n, String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in PrintStatement");
+    String toPrintType = n.f2.accept(this, argu);
+    TC.CheckPrintStatement(toPrintType);
+    return "PrintStatementVisited";
+  }
 
   public String visit(Type n, String argu) throws StatiCheckingException
   {
@@ -250,6 +259,8 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   }
 
   public String visit(ArrayAllocationExpression n, String argu) {
+    String typeOfArraySize = n.f3.accept(this,null);
+    TC.CheckTypeOfArraySize(typeOfArraySize);
     return "int array";
   }
 

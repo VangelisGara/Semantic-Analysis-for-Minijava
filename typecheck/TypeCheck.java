@@ -298,4 +298,18 @@ public class TypeCheck{
 
   }
 
+  // Check if type is something printable
+  public void CheckPrintStatement(String toPrintType) throws StatiCheckingException
+  {
+    if(ST.classes_data.containsKey(toPrintType))
+      throw new StatiCheckingException("\n✗ Can't print a class object, in method " + this.currentMethod + " of class " + this.currentClass);
+
+  }
+
+  // Check if the type of array size is int
+  public void CheckTypeOfArraySize(String typeOfArraySize){
+    if(typeOfArraySize != "int")
+      throw new StatiCheckingException("\n✗ Illegal NEW ARRAY ALLOCATION operation, type of array size must be integer, method " + this.currentMethod + " of class " + this.currentClass);
+  }
+
 }
