@@ -16,26 +16,26 @@ public class SymbolTable {
   {
     // check if class is already declared in program
     if(classes_data.containsKey(className))
-      throw new StatiCheckingException("\n✗ Class with name " + className + " has already been defined");
+      throw new StatiCheckingException("\n     ✗ Class with name " + className + " has already been declared");
 
     // if class extends from superclass
     if(classInfo.extendsFrom != ""){
       // make sure that superclass has been declared
       if(classes_data.containsKey(classInfo.extendsFrom) == false)
-        throw new StatiCheckingException("\n✗ Class with name " + classInfo.extendsFrom + " has not been declared, to extend from");
+        throw new StatiCheckingException("\n     ✗ Class with name " + classInfo.extendsFrom + " has not been declared, to extend from");
 
       // a class cannot inherit from itself
       if(classInfo.extendsFrom == className)
-        throw new StatiCheckingException("\n✗ Class with name " + classInfo.extendsFrom + " cannot inherit from itself");
+        throw new StatiCheckingException("\n     ✗ Class with name " + classInfo.extendsFrom + " cannot inherit from itself");
 
       // allow only single inheritance
       String grandfather = classes_data.get(classInfo.extendsFrom).extendsFrom;
       if(grandfather != "")
-        throw new StatiCheckingException("\n✗ Class with name " + className + " must have single inheritance");
+        throw new StatiCheckingException("\n     ✗ Class with name " + className + " must have single inheritance");
 
       // check for circural inheritance
       if(grandfather == className)
-        throw new StatiCheckingException("\n✗ Class with name " + className + " can't have circural inheritance");
+        throw new StatiCheckingException("\n     ✗ Class with name " + className + " can't have circural inheritance");
 
     }
     classes_data.put(className,classInfo);

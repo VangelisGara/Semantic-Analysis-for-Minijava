@@ -21,7 +21,7 @@ public class ClassInfo {
   {
     // Check if method has already been declared in class
     if(methods_data.containsKey(MethodsName))
-      throw new StatiCheckingException("\n✗ Multiple declaration of method " + MethodsName + " in class " + this.className);
+      throw new StatiCheckingException("\n     ✗ Multiple declaration of method " + MethodsName + " in class " + this.className);
 
     methods_data.put(MethodsName,methodsInf);
   }
@@ -32,13 +32,13 @@ public class ClassInfo {
       if(superclass.methods_data.containsKey(MethodsName)){
         // check for the return type of polymorphed function
         if(superclass.methods_data.get(MethodsName).type != methods_data.get(MethodsName).type)
-          throw new StatiCheckingException("\n✗ Methods " + MethodsName + " return type in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
+          throw new StatiCheckingException("\n     ✗ Methods " + MethodsName + " return type in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
 
         // check for the arguments of the polymorphed function
-        Set<String> superclass_args_types = new HashSet<>(superclass.methods_data.get(MethodsName).arguments_data.values());
-        Set<String> derived_args_types = new HashSet<>(methods_data.get(MethodsName).arguments_data.values());
+        ArrayList<String> superclass_args_types = new ArrayList<>(superclass.methods_data.get(MethodsName).arguments_data.values());
+        ArrayList<String> derived_args_types =    new ArrayList<>(methods_data.get(MethodsName).arguments_data.values());
         if( !(superclass_args_types.equals(derived_args_types)) )
-          throw new StatiCheckingException("\n✗ Methods " + MethodsName + " arguments in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
+          throw new StatiCheckingException("\n     ✗ Methods " + MethodsName + " arguments in class " + className + " must be the same with superclass' " + superclass.className + " inheritant function ");
       }
     }
   }
@@ -48,7 +48,7 @@ public class ClassInfo {
   {
     // check if field has already been declared in class
     if(class_variables_data.containsKey(fieldName))
-      throw new StatiCheckingException("\n✗ Multiple declaration of field " + fieldName + " in class " + this.className);
+      throw new StatiCheckingException("\n     ✗ Multiple declaration of field " + fieldName + " in class " + this.className);
     class_variables_data.put(fieldName,fieldType);
   }
 

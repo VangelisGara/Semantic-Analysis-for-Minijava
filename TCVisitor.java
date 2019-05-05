@@ -7,11 +7,11 @@ import java.util.*;
 
 public class TCVisitor extends GJDepthFirst <String,String> {
   TypeCheck TC; // our type checker
-  Stack<LinkedHashSet<String>> stacked_args; // stack method calling arguments
+  Stack <ArrayList<String>> stacked_args; // stack method calling arguments
 
   TCVisitor(SymbolTable symbolTable){
     TC = new TypeCheck(symbolTable);
-    stacked_args = new Stack<LinkedHashSet<String>>();
+    stacked_args = new Stack <ArrayList<String>>() ;
   }
 
   public String visit(MainClass n,String argu) {
@@ -67,7 +67,6 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     // Visit Return Expression
     String returnType = n.f10.accept(this,null);
     TC.CheckReturnType(returnType);
-
     return "MethodDeclarationVisited";
   }
 
@@ -213,7 +212,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   public String visit(MessageSend n,String argu) throws StatiCheckingException
   {
     //System.out.println("We are in MessageSend");
-    stacked_args.push(new LinkedHashSet<String>());
+    stacked_args.push(new ArrayList<String>());
     String callFrom = n.f0.accept(this,null);
     String method = n.f2.accept(this,null);
     // Visit EpxressionList

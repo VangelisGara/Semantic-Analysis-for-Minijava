@@ -1,0 +1,35 @@
+class A {
+  public static void main ( String [] args) {
+
+  }
+}
+
+class B {
+  public int m(boolean v,int c){
+    return 2;
+  }
+}
+
+class C extends B {
+  int x;
+  int[] y;
+  boolean z;
+
+  public int m(boolean i,int j){
+    i = z;
+    if( z && i )
+      z = i;
+    else
+      z = !i;
+    return 0;
+  }
+
+  public int n(int u){
+    y[x] = y[u];
+    x = y.length;
+    while(u < 10){
+      u = this.m(false,this.m(z,3));
+    }
+    return 1;
+  }
+}

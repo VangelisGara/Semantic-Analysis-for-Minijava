@@ -20,7 +20,7 @@ public class MethodInfo {
   {
     // check if argument has already been in decalred in method
     if(arguments_data.containsKey(argName))
-      throw new StatiCheckingException("\n✗ Multiple declaration of argument " + argName + " in method " + this.methodName);
+      throw new StatiCheckingException("\n     ✗ Multiple declaration of argument " + argName + " in method " + this.methodName);
     arguments_data.put(argName,type);
   }
 
@@ -29,11 +29,11 @@ public class MethodInfo {
   {
     // check if variable has already been in declared in method
     if(method_variables_data.containsKey(varName))
-      throw new StatiCheckingException("\n✗ Multiple declaration of variable " + varName + " in method " + this.methodName);
+      throw new StatiCheckingException("\n     ✗ Multiple declaration of variable " + varName + " in method " + this.methodName);
 
     // check if variable has already been in decalred in method as argument
     if(arguments_data.containsKey(varName))
-      throw new StatiCheckingException("\n✗ Variable " + varName + " has already been declared as argument in method " + this.methodName);
+      throw new StatiCheckingException("\n     ✗ Variable " + varName + " has already been declared as argument in method " + this.methodName);
     method_variables_data.put(varName,varType);
   }
 
