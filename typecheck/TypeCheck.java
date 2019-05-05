@@ -309,8 +309,8 @@ public class TypeCheck{
   // Check if type is something printable
   public void CheckPrintStatement(String toPrintType) throws StatiCheckingException
   {
-    if(ST.classes_data.containsKey(toPrintType))
-      throw new StatiCheckingException("\n     ✗ Can't print a class object, in method " + this.currentMethod + " of class " + this.currentClass);
+    if( toPrintType != "int" && toPrintType != "boolean")
+      throw new StatiCheckingException("\n     ✗ Only ints and booleans can be printed with println , in method " + this.currentMethod + " of class " + this.currentClass);
 
   }
 
