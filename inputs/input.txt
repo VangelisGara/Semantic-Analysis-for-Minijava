@@ -3,12 +3,13 @@ class Test {
     int x;
     int y;
     Test3 k;
+    Test q;
     int z;
     z = x*5;
     x = y + z;
     y = 10 - 3;
     y = x;
-    x = k.TestMethod1();
+    q = k.TestMethod1();
   }
 }
 
@@ -19,16 +20,28 @@ class Test2 {
   int l;
 
   public boolean TestMethod(Test q,int w,boolean e){
-    x = new Test();
+    q = new Test();
     o = !!!o;
     o = false && true;
     w = x[4];
     e = this.TestMethod(new Test(),w,y.TestMethod(this.TestMethod1(),w,y.TestMethod(q,w,o)));
-    return 0;
+    return y.TestMethod(q,l,o);
   }
 
   public Test TestMethod1(){
-    return 0;
+    Test p;
+    if(!o){
+      l = 1;
+    }
+    else{
+      l = 2;
+    }
+    while(o){
+      while(!o){
+        o = !o;
+      }
+    }
+    return p;
   }
 
 }
@@ -37,12 +50,12 @@ class Test3 extends Test2{
   public boolean TestMethod(Test q,int z,boolean i){
     boolean e;
     o = 2 < l;
-    l = new int[42];
-    y = x.length;
+    x = new int[42];
+    l = x.length;
     i = this.TestMethod(q,z,i);
-    l = o;
+    i = !o;
     i = !(this.TestMethod(((new Test())),l,e));
-    l = q;
-    return 1;
+    x[5] = z;
+    return i;
   }
 }

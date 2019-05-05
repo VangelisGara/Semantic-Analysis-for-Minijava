@@ -51,7 +51,8 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     return "ClassExtendsVisited";
   }
 
-  public String visit(MethodDeclaration n,String argu){
+  public String visit(MethodDeclaration n,String argu) throws StatiCheckingException
+  {
     //System.out.println("We are in Method Declaration");
     String MethodName = n.f2.accept(this,null);
     TC.SetCurrentMethod(MethodName);
@@ -63,6 +64,10 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     n.f7.accept(this,null);
     // Visit Statement
     n.f8.accept(this,null);
+    // Visit Return Expression
+    String returnType = n.f10.accept(this,null);
+    TC.CheckReturnType(returnType);
+
     return "MethodDeclarationVisited";
   }
 
@@ -72,7 +77,8 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     String Dest = n.f0.accept(this,null);
     TC.IsVarDeclared(Dest); // Check if destination variable has been declared
     // Visit Expression
-    n.f2.accept(this,null);
+    String typeOfExpr = n.f2.accept(this,null);
+    TC.CheckTypeCompatibility(Dest,typeOfExpr);
     return "AssignmentStatementVisited";
   }
 
@@ -80,10 +86,32 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   {
     //System.out.println("We are in ArrayAssignmentStatement");
     String ArrDest = n.f0.accept(this,null);
-    TC.IsVarDeclared(ArrDest);
-    TC.IsVarArray(ArrDest);
+    String typeOfIndex = n.f2.accept(this,null);
+    String typeOfExpr = n.f5.accept(this,null);
+    TC.CheckArrayAssignment(ArrDest,typeOfIndex,typeOfExpr);
     return "ArrayAssignmentStatementVisited";
   }
+
+  public String visit(IfStatement n,String argu) throws StatiCheckingException
+  {
+    //System.out.println("We are in IfStatement");
+    String conditionType = n.f2.accept(this,null);
+    TC.CheckConditionType(conditionType);
+    // Visit statement of if
+    n.f4.accept(this,null);
+    // Visit statement of else
+    n.f6.accept(this,null);
+    return "IfVisited";
+  }
+
+  public String visit(WhileStatement n, String argu) {
+    //System.out.println("We are in WhileStatement");
+    String conditionType = n.f2.accept(this,null);
+    TC.CheckConditionType(conditionType);
+    // Visit statement of if
+    n.f4.accept(this,null);
+    return "WhileStatementVisited";
+}
 
   public String visit(Type n, String argu) throws StatiCheckingException
   {
@@ -257,5 +285,4 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   public String visit(BooleanType n, String argu){
     return n.f0.toString();
   }
-
 }

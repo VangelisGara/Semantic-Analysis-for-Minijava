@@ -211,7 +211,8 @@ public class TypeCheck{
   }
 
   // Check if class given contains the method given
-  public String CheckMessageSend(String callFrom,String MethodName,LinkedHashSet<String> params_given){
+  public String CheckMessageSend(String callFrom,String MethodName,LinkedHashSet<String> params_given) throws StatiCheckingException
+  {
     // Firstly check if we can call for
     CanBeCalled(callFrom);
     // get the class which method is called from
@@ -259,6 +260,42 @@ public class TypeCheck{
     if( !(method_args_types.equals(params_given)) )
       throw new StatiCheckingException("\n✗ Parameters aren't the same type, as declared, in method " + MethodName + " of class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
     return type;
+  }
+
+  // Check if expression's return type is the same as method's declared one
+  public void CheckReturnType(String returnType) throws StatiCheckingException
+  {
+    String declaredType = ST.classes_data.get(this.currentClass).methods_data.get(this.currentMethod).type;
+    if( !(declaredType.equals(returnType)) )
+      throw new StatiCheckingException("\n✗ Method " + this.currentMethod + " in class " + this.currentClass + " is trying to return a type " + returnType + " , while it expects a type " + declaredType);
+
+  }
+
+  // Check type compatibility
+  public void CheckTypeCompatibility(String Dest,String typeOfExpr) throws StatiCheckingException
+  {
+    String DestType = GetVarType(Dest);
+    if( !(DestType.equals(typeOfExpr)) )
+      throw new StatiCheckingException("\n✗ Illegal ASSIGN operation, trying to assign type " + typeOfExpr + " to variable of type " + DestType + " in method " + this.currentMethod + " of class " + this.currentClass);
+  }
+
+  // Check array assignment operation
+  public void CheckArrayAssignment(String ArrDest,String typeOfIndex,String typeOfExpr) throws StatiCheckingException
+  {
+    IsVarDeclared(ArrDest);
+    IsVarArray(ArrDest);
+    if(typeOfIndex != "int")
+      throw new StatiCheckingException("\n✗ Illegal ARRAY ASSIGN operation, index must be of type int, not " + typeOfIndex + ", in method " + this.currentMethod + " of class " + this.currentClass);
+    if(typeOfExpr != "int")
+      throw new StatiCheckingException("\n✗ Illegal ARRAY ASSIGN operation, trying to assign a type of " + typeOfExpr + " to an integer array, in method " + this.currentMethod + " of class " + this.currentClass);
+  }
+
+  // Check if condition is boolean
+  public void CheckConditionType(String conditionType) throws StatiCheckingException
+  {
+    if(conditionType != "boolean")
+      throw new StatiCheckingException("\n✗ Condition must be of type boolean, in method " + this.currentMethod + " of class " + this.currentClass);
+
   }
 
 }
