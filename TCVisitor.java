@@ -7,11 +7,11 @@ import java.util.*;
 
 public class TCVisitor extends GJDepthFirst <String,String> {
   TypeCheck TC; // our type checker
-  LinkedHashSet<String> parameters_given;
+  Stack<LinkedHashSet<String>> stacked_args; // stack method calling arguments
 
   TCVisitor(SymbolTable symbolTable){
     TC = new TypeCheck(symbolTable);
-    parameters_given= new LinkedHashSet<String>();
+    stacked_args = new Stack<LinkedHashSet<String>>();
   }
 
   public String visit(MainClass n,String argu) {
@@ -176,19 +176,19 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   public String visit(MessageSend n,String argu) throws StatiCheckingException
   {
     //System.out.println("We are in MessageSend");
-    parameters_given.clear();
+    stacked_args.push(new LinkedHashSet<String>());
     String callFrom = n.f0.accept(this,null);
     String method = n.f2.accept(this,null);
     // Visit EpxressionList
     n.f4.accept(this,null);
-    String methodType = TC.CheckMessageSend(callFrom,method,parameters_given);
+    String methodType = TC.CheckMessageSend(callFrom,method,stacked_args.pop());
     return methodType;
   }
 
   public String visit(ExpressionList n, String argu) {
     //System.out.println("We are in ExpressionList");
     String firstParameter = n.f0.accept(this,argu);
-    parameters_given.add(firstParameter);
+    stacked_args.peek().add(firstParameter);
     // Visit ExpressionTail
     n.f1.accept(this,null);
     return "expressionlistvisited";
@@ -197,7 +197,7 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   public String visit(ExpressionTerm n, String argu) {
     //System.out.println("We are in ExpressionTerm");
     String anotherParameter = n.f1.accept(this,null);
-    parameters_given.add(anotherParameter);
+    stacked_args.peek().add(anotherParameter);
     return "ExpressionTermvisited";
   }
 

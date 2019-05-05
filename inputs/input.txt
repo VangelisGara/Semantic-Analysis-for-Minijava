@@ -23,11 +23,11 @@ class Test2 {
     o = !!!o;
     o = false && true;
     w = x[4];
-    e = this.TestMethod(new Test(),o,y.TestMethod(q,w,y.TestMethod(q,w,e)));
+    e = this.TestMethod(new Test(),w,y.TestMethod(this.TestMethod1(),w,y.TestMethod(q,w,o)));
     return 0;
   }
 
-  public Test3 TestMethod1(){
+  public Test TestMethod1(){
     return 0;
   }
 
