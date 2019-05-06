@@ -49,7 +49,7 @@ class Main {
         }
       }
     }
-    // Percentage
+    // Number of files passed
     System.out.println("\n\n    ☑ " + InputsPassed + "/" + args.length + " passed!");
   }
 }
