@@ -28,9 +28,8 @@ public class TypeCheck{
     boolean declaredAsMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.containsKey(var);
     boolean declaredAsArgument = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.containsKey(var);
     boolean declaredAsFieldInSuperclass = false;
-    String superclass = ST.classes_data.get(currentClass).extendsFrom;
-    if(superclass != "")
-      declaredAsFieldInSuperclass = ST.classes_data.get(superclass).class_variables_data.containsKey(var);
+    if(SearchAncestors(currentClass,var) != "")
+      declaredAsFieldInSuperclass = true;
     if( !(declaredAsField || declaredAsArgument || declaredAsMethodVar || declaredAsFieldInSuperclass) )
       throw new StatiCheckingException("\n     ✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " has not been declared");
     return true;
@@ -45,10 +44,23 @@ public class TypeCheck{
   }
 
   // Check if class has been declared
-  public void IsClassDeclared(String className) throws StatiCheckingException
+  public boolean IsClassDeclared(String className) throws StatiCheckingException
   {
     if( !(ST.classes_data.containsKey(className)) )
       throw new StatiCheckingException("\n     ✗ There is no class object " + className + " in method " + this.currentMethod + " of class " + this.currentClass);
+    return true;
+  }
+
+  // Return variable's type that have been declared to an ancestor
+  public String SearchAncestors(String className,String var){
+    String superclass = ST.classes_data.get(className).extendsFrom;
+    while(superclass != ""){
+      String type = ST.classes_data.get(superclass).class_variables_data.get(var);
+      if(type != null)
+        return type;
+      superclass = ST.classes_data.get(superclass).extendsFrom;
+    }
+    return "";
   }
 
   // Return given variable's type
@@ -67,10 +79,8 @@ public class TypeCheck{
     if(typeGotFromField != null)
       return typeGotFromField;
 
-    String superclass = ST.classes_data.get(currentClass).extendsFrom;
-    if(superclass != "")
-      typeGotFromSuperField = ST.classes_data.get(superclass).class_variables_data.get(var);
-    if(typeGotFromSuperField != null)
+    typeGotFromSuperField = SearchAncestors(currentClass,var);
+    if(typeGotFromSuperField != "")
       return typeGotFromSuperField;
     return "error";
   }
@@ -196,6 +206,8 @@ public class TypeCheck{
   {
     if(expr == "this" || expr.startsWith("/"))
       return;
+    if(ST.classes_data.containsKey(expr))
+      return;
     if( expr == "boolean" || expr == "int" || expr == "int array" )
       throw new StatiCheckingException("\n     ✗ Function call in class " + this.currentClass + " of method " + this.currentMethod + ", cannot be called by a non class object");
     IsVarDeclared(expr);
@@ -205,7 +217,7 @@ public class TypeCheck{
   // Check if class given contains the method given
   public String CheckMessageSend(String callFrom,String MethodName,ArrayList<String> params_given) throws StatiCheckingException
   {
-    // Firstly check if we can call for
+    // Firstly check if we can call from
     CanBeCalled(callFrom);
     // get the class which method is called from
     String whichClass;
@@ -213,43 +225,37 @@ public class TypeCheck{
       whichClass = currentClass;
     else if(callFrom.startsWith("/"))
       whichClass = callFrom.substring(1);
+    else if( ST.classes_data.containsKey(callFrom) )
+      whichClass = callFrom;
     else
       whichClass = this.IsVarDeclaredClass(callFrom);
     // check if method exists in method, check arguments and get type
-    String type;
+    String type = null;
     String superclass = ST.classes_data.get(whichClass).extendsFrom;
-    ArrayList<String> method_args_types;
+    ArrayList<String> method_args_types = null;
+    // check if method exists in current class
     if( ST.classes_data.get(whichClass).methods_data.containsKey(MethodName) ){
       type = ST.classes_data.get(whichClass).methods_data.get(MethodName).type;
       method_args_types = new ArrayList<>(ST.classes_data.get(whichClass).methods_data.get(MethodName).arguments_data.values());
     }
+    // check if methods exists in ancestor classes
     else if(superclass != ""){
+      boolean found = false;
+      while(superclass != ""){
         if( ST.classes_data.get(superclass).methods_data.containsKey(MethodName) ){
           type = ST.classes_data.get(superclass).methods_data.get(MethodName).type;
           method_args_types = new ArrayList<>(ST.classes_data.get(superclass).methods_data.get(MethodName).arguments_data.values());
+          found = true;
+          break;
         }
-        else
-          throw new StatiCheckingException("\n     ✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
-
+        superclass = ST.classes_data.get(superclass).extendsFrom;
+      }
+      if(!found)
+        throw new StatiCheckingException("\n     ✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
     }
     else
       throw new StatiCheckingException("\n     ✗ There is no method " + MethodName + " in class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
-    /*
-    System.out.println("\n\nHow they were declared");
-    Iterator<String> i=method_args_types.iterator();
-    while(i.hasNext())
-    {
-    System.out.println(i.next());
-    }
-
-    System.out.println("\n\nParameters Given");
-    Iterator<String> j=params_given.iterator();
-    while(j.hasNext())
-    {
-    System.out.println(j.next());
-    }*/
     // Check if the number of parameters given is the same with method's declared number of parameters
-    // Check for number of params given
     if( method_args_types.size() != params_given.size() )
       throw new StatiCheckingException("\n     ✗ Parameters aren't the same type, as declared, in method " + MethodName + " of class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
     // Check for type equality
@@ -258,12 +264,19 @@ public class TypeCheck{
         // if type of expr is a class
         if( ST.classes_data.containsKey(params_given.get(i)) ){
           // check if that class derives from a class with same type of destination's type
+          boolean found = false;
           superclass = ST.classes_data.get(params_given.get(i)).extendsFrom;
-          if( !(method_args_types.get(i).equals(superclass)) )
+          while(superclass != ""){
+            if( method_args_types.get(i).equals(superclass) )
+              found = true;
+            superclass = ST.classes_data.get(superclass).extendsFrom;
+          }
+          if(!found)
             throw new StatiCheckingException("\n     ✗ Parameters aren't the same type, as declared, in method " + MethodName + " of class " + whichClass + " to call from. ( tried to call from method " + this.currentMethod + " of class " + this.currentClass + ")");
         }
       }
     }
+
     return type;
   }
 
@@ -282,8 +295,12 @@ public class TypeCheck{
     String DestType = GetVarType(Dest);
     if( !(DestType.equals(typeOfExpr)) ){
       String superclass = ST.classes_data.get(typeOfExpr).extendsFrom;
-      if( !(superclass.equals(DestType)) )
-        throw new StatiCheckingException("\n     ✗ Illegal ASSIGN operation, trying to assign type " + typeOfExpr + " to variable of type " + DestType + " in method " + this.currentMethod + " of class " + this.currentClass);
+      while(superclass != ""){
+        if(superclass.equals(DestType))
+          return;
+        superclass = ST.classes_data.get(superclass).extendsFrom;
+      }
+      throw new StatiCheckingException("\n     ✗ Illegal ASSIGN operation, trying to assign type " + typeOfExpr + " to variable of type " + DestType + " in method " + this.currentMethod + " of class " + this.currentClass);
     }
   }
 

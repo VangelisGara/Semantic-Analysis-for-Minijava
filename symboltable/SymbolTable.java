@@ -28,12 +28,8 @@ public class SymbolTable {
       if(classInfo.extendsFrom == className)
         throw new StatiCheckingException("\n     ✗ Class with name " + classInfo.extendsFrom + " cannot inherit from itself");
 
-      // allow only single inheritance
-      String grandfather = classes_data.get(classInfo.extendsFrom).extendsFrom;
-      if(grandfather != "")
-        throw new StatiCheckingException("\n     ✗ Class with name " + className + " must have single inheritance");
-
       // check for circural inheritance
+      String grandfather = classes_data.get(classInfo.extendsFrom).extendsFrom;
       if(grandfather == className)
         throw new StatiCheckingException("\n     ✗ Class with name " + className + " can't have circural inheritance");
 

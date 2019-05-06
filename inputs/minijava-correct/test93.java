@@ -11,11 +11,11 @@ class Test {
 
     public int start(){
 
-	i = new int[10];
-	test = new Test();
-	test = (test.next()).next();
-	
-	return 0;
+    	i = new int[10];
+    	test = new Test();
+    	test = (test.next()).next();
+
+	    return 0;
     }
 
     public Test next() {

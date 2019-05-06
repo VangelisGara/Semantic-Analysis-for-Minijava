@@ -74,7 +74,6 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   {
     //System.out.println("We are in AssignmentStatement");
     String Dest = n.f0.accept(this,null);
-    TC.IsVarDeclared(Dest); // Check if destination variable has been declared
     // Visit Expression
     String typeOfExpr = n.f2.accept(this,null);
     TC.CheckTypeCompatibility(Dest,typeOfExpr);
