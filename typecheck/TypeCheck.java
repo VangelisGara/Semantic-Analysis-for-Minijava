@@ -302,6 +302,9 @@ public class TypeCheck{
   {
     String DestType = GetVarType(Dest);
     if( !(DestType.equals(typeOfExpr)) ){
+      if( !(ST.classes_data.containsKey(typeOfExpr)) )
+        throw new StatiCheckingException("\n     ✗ Illegal ASSIGN operation, trying to assign type " + typeOfExpr + " to variable of type " + DestType + " in method " + this.currentMethod + " of class " + this.currentClass);
+
       String superclass = ST.classes_data.get(typeOfExpr).extendsFrom;
       while(superclass != ""){
         if(superclass.equals(DestType))

@@ -50,6 +50,6 @@ class Main {
       }
     }
     // Percentage
-    System.out.println("    ☑ " + InputsPassed + "/" + args.length + " passed!");
+    System.out.println("\n\n    ☑ " + InputsPassed + "/" + args.length + " passed!");
   }
 }
