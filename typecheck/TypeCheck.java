@@ -297,9 +297,17 @@ public class TypeCheck{
   public void CheckReturnType(String returnType) throws StatiCheckingException
   {
     String declaredType = ST.classes_data.get(this.currentClass).methods_data.get(this.currentMethod).type;
-    if( !(declaredType.equals(returnType)) )
+    if( !(declaredType.equals(returnType)) ){
+      if( !(ST.classes_data.containsKey(returnType)) )
+        throw new StatiCheckingException("\n     ✗ Method " + this.currentMethod + " in class " + this.currentClass + " is trying to return a type " + returnType + " , while it expects a type " + declaredType);
+      String superclass = ST.classes_data.get(returnType).extendsFrom;
+      while(superclass != ""){
+        if(superclass.equals(declaredType))
+          return;
+        superclass = ST.classes_data.get(superclass).extendsFrom;
+      }
       throw new StatiCheckingException("\n     ✗ Method " + this.currentMethod + " in class " + this.currentClass + " is trying to return a type " + returnType + " , while it expects a type " + declaredType);
-
+    }
   }
 
   // Check type compatibility
