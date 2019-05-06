@@ -14,8 +14,9 @@ Performing Semantic Analysis for Minijava, a subset of Java. The implemention us
 [Minijava Grammar in BNF form](http://cgi.di.uoa.gr/~thp06/project_files/minijava-new/minijava.html)    
 
 
-### To compile && execute
+#### To compile
 `make` 
+#### To execute
 `java main [file1] [file2] ... [fileN]`
 
-#### There are multiple test files included
+##### There are multiple test files included
