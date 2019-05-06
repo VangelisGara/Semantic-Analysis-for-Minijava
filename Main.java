@@ -6,6 +6,7 @@ import staticheckingexception.*;
 
 class Main {
   public static void main(String[] args){
+    int InputsPassed = 0;
     if (args.length < 1){
       System.err.println("Please add input files");
       System.exit(1);
@@ -28,6 +29,7 @@ class Main {
         root.accept(TypeChecker,null);
         //System.out.println("     • Type Cheking the input finished successfully...");
         System.out.print(" ✓ \n\n\n");
+        InputsPassed++;
       }
       catch (ParseException ex) {
         System.out.println(ex.getMessage());
@@ -47,5 +49,7 @@ class Main {
         }
       }
     }
+    // Percentage
+    System.out.println("    ☑ " + InputsPassed + "/" + args.length + " passed!");
   }
 }

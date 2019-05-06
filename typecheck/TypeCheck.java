@@ -21,6 +21,14 @@ public class TypeCheck{
     currentClass = curClass;
   }
 
+  public String GetCurrentMethod(){
+    return this.currentMethod;
+  }
+
+  public String GetCurrentClass(){
+    return this.currentClass;
+  }
+
   // Check that variable has been declared
   public boolean IsVarDeclared(String var) throws StatiCheckingException
   {
@@ -33,14 +41,6 @@ public class TypeCheck{
     if( !(declaredAsField || declaredAsArgument || declaredAsMethodVar || declaredAsFieldInSuperclass) )
       throw new StatiCheckingException("\n     ✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " has not been declared");
     return true;
-  }
-
-  // Check if variable is an existing class
-  public String IsVarDeclaredClass(String var){
-    String type = GetVarType(var);
-    if( type == "int" || type == "int array" || type == "boolean" )
-      throw new StatiCheckingException("\n     ✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
-    return type;
   }
 
   // Check if class has been declared
@@ -83,6 +83,14 @@ public class TypeCheck{
     if(typeGotFromSuperField != "")
       return typeGotFromSuperField;
     return "error";
+  }
+
+  // Check if variable is an existing class
+  public String IsVarDeclaredClass(String var){
+    String type = GetVarType(var);
+    if( type == "int" || type == "int array" || type == "boolean" )
+      throw new StatiCheckingException("\n     ✗ Var " + var + " in method " + this.currentMethod + " of class " + this.currentClass + " must be a declared class");
+    return type;
   }
 
   // Check if variable is an array

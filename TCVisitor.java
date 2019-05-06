@@ -131,11 +131,14 @@ public class TCVisitor extends GJDepthFirst <String,String> {
   public String visit(Expression n, String argu){
     String gotFromExpression =  n.f0.accept(this, argu);
     String type = gotFromExpression;
+    // if expression is this then it refers to current class
+    if(gotFromExpression == "this")
+      type = TC.GetCurrentClass();
     // if expression returns a string starting with "/", then a new allocation expression occured of type /<type>
-    if(gotFromExpression.startsWith("/"))
+    else if(gotFromExpression.startsWith("/"))
       type = gotFromExpression.substring(1);
     // if expression returns an intetifier
-    if( !gotFromExpression.startsWith("/") && gotFromExpression != "int" && gotFromExpression != "boolean" && gotFromExpression != "int array" && !(TC.ST.classes_data.containsKey(gotFromExpression)) ){
+    else if( !gotFromExpression.startsWith("/") && gotFromExpression != "int" && gotFromExpression != "boolean" && gotFromExpression != "int array" && !(TC.ST.classes_data.containsKey(gotFromExpression)) ){
       type = TC.GetVarType(gotFromExpression);
     }
     //System.out.println(type);
