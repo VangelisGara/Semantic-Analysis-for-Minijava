@@ -14,6 +14,10 @@ public class TCVisitor extends GJDepthFirst <String,String> {
     stacked_args = new Stack <ArrayList<String>>() ;
   }
 
+  public TypeCheck getTypeCheck(){
+    return this.TC;
+  }
+
   public String visit(MainClass n,String argu) {
     //System.out.println("We are in Main Class Declaration");
     String MainClassName = n.f1.accept(this,null);

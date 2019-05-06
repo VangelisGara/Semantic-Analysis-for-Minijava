@@ -29,6 +29,7 @@ class Main {
         root.accept(TypeChecker,null);
         //System.out.println("     • Type Cheking the input finished successfully...");
         System.out.print(" ✓ \n\n\n");
+        TypeChecker.getTypeCheck().StartCalculation();
         InputsPassed++;
       }
       catch (ParseException ex) {

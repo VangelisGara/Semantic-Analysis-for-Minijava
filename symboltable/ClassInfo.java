@@ -7,13 +7,13 @@ public class ClassInfo {
   public String className="";
   public String extendsFrom=""; // inheritance relationship
   public String extendsTo=""; // inheritance relationship
-  public Map <String,String> class_variables_data; // [ class variable name , type  ]
-  public Map <String,MethodInfo> methods_data; // [ class methods name , methods info ]
+  public LinkedHashMap <String,String> class_variables_data; // [ class variable name , type  ]
+  public LinkedHashMap <String,MethodInfo> methods_data; // [ class methods name , methods info ]
 
   // Constructor
   public ClassInfo(){
-    class_variables_data = new HashMap<String,String>();
-    methods_data = new HashMap<String,MethodInfo>();
+    class_variables_data = new LinkedHashMap<String,String>();
+    methods_data = new LinkedHashMap<String,MethodInfo>();
   }
 
   // Insert a method to a class

@@ -33,8 +33,12 @@ public class TypeCheck{
   public boolean IsVarDeclared(String var) throws StatiCheckingException
   {
     boolean declaredAsField = ST.classes_data.get(currentClass).class_variables_data.containsKey(var);
-    boolean declaredAsMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.containsKey(var);
-    boolean declaredAsArgument = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.containsKey(var);
+    boolean declaredAsMethodVar=false;
+    boolean declaredAsArgument=false;
+    if(currentMethod != ""){
+      declaredAsMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.containsKey(var);
+      declaredAsArgument = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.containsKey(var);
+    }
     boolean declaredAsFieldInSuperclass = false;
     if(SearchAncestors(currentClass,var) != "")
       declaredAsFieldInSuperclass = true;
@@ -67,14 +71,15 @@ public class TypeCheck{
   public String GetVarType(String var){
     IsVarDeclared(var);
     String typeGotFromField,typeGotFromMethodVar,typeGotFromMethodArg,typeGotFromSuperField=null;
-    typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
-    if(typeGotFromMethodVar != null)
+    if(currentMethod != ""){
+      typeGotFromMethodVar = ST.classes_data.get(currentClass).methods_data.get(currentMethod).method_variables_data.get(var);
+      if(typeGotFromMethodVar != null)
       return typeGotFromMethodVar;
 
-    typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
-    if(typeGotFromMethodArg != null)
+      typeGotFromMethodArg = ST.classes_data.get(currentClass).methods_data.get(currentMethod).arguments_data.get(var);
+      if(typeGotFromMethodArg != null)
       return typeGotFromMethodArg;
-
+    }
     typeGotFromField = ST.classes_data.get(currentClass).class_variables_data.get(var);
     if(typeGotFromField != null)
       return typeGotFromField;
@@ -347,5 +352,80 @@ public class TypeCheck{
     if(typeOfArraySize != "int")
       throw new StatiCheckingException("\n     ✗ Illegal NEW ARRAY ALLOCATION operation, type of array size must be integer, method " + this.currentMethod + " of class " + this.currentClass);
   }
+
+  // Start offset calculation
+  public void StartCalculation(){
+    Map<String,Integer> trackClassesFields = new HashMap<String,Integer>();
+    Map<String,Integer> trackClassesMethods = new HashMap<String,Integer>();
+    // For every class
+    Set< Map.Entry <String,ClassInfo> > st = ST.classes_data.entrySet();
+    boolean isMainClass = true;
+    String MainClassName="";
+    for(Map.Entry <String,ClassInfo> cur:st){
+      int VarCounter,MethodCounter;
+      String thisClass = cur.getKey();
+      // configure currentClass and currentMethod, so that GetVarType can search properly
+      this.currentClass = thisClass;
+      this.currentMethod = "";
+      if(isMainClass){
+        isMainClass = false;
+        MainClassName = thisClass;
+        continue;
+      }
+      // If class inherits from another,start from where it left
+      System.out.println("\n\t\t\t--------------Class " + thisClass + "--------------");
+      String superclass = ST.classes_data.get(thisClass).extendsFrom;
+      if(superclass != "" && !(superclass.equals(MainClassName))){
+        VarCounter = trackClassesFields.get(superclass);
+        MethodCounter = trackClassesMethods.get(superclass);
+        trackClassesFields.put(thisClass,VarCounter);
+        trackClassesMethods.put(thisClass,MethodCounter);
+      }
+      else{
+        VarCounter = 0;
+        MethodCounter = 0;
+        trackClassesFields.put(thisClass,0);
+        trackClassesMethods.put(thisClass,0);
+      }
+      // for every field in class, calculate the offset
+      System.out.println("\n\t\t\t     --------Variables--------");
+      Set< Map.Entry <String,String> > st_f = ST.classes_data.get(thisClass).class_variables_data.entrySet();
+      for (Map.Entry<String,String> cur_f:st_f){
+        String thisField = cur_f.getKey();
+        String thisFieldType = GetVarType(thisField);
+        int size;
+        if(thisFieldType == "int")
+          size = 4;
+        else if(thisFieldType == "boolean")
+          size = 1;
+        else
+          size = 8;
+        System.out.println("\t\t\t     " + thisClass + "." + thisField + " : " + VarCounter);
+        VarCounter += size;
+      }
+      // for every method in class, calculate the offset
+      System.out.println("\n\t\t\t     ---------Methods---------");
+      Set< Map.Entry <String,MethodInfo> > st_m = ST.classes_data.get(thisClass).methods_data.entrySet();
+      for (Map.Entry<String,MethodInfo> cur_m:st_m){
+        // if method exists in class' ancestors, skip
+        boolean existsInSuperclass = false;
+        String thisMethod = cur_m.getKey();
+        while(superclass != ""){
+          if( ST.classes_data.get(superclass).methods_data.containsKey(thisMethod) ){
+            existsInSuperclass = true;
+            break;
+          }
+          superclass = ST.classes_data.get(superclass).extendsFrom;
+        }
+        if(existsInSuperclass)
+          continue;
+        System.out.println("\t\t\t     " + thisClass + "." + thisMethod + " : " + MethodCounter);
+        MethodCounter += 8;
+      }
+      trackClassesFields.put(thisClass,VarCounter);
+      trackClassesMethods.put(thisClass,MethodCounter);
+    }
+  }
+
 
 }

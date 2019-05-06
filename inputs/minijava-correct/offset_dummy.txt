@@ -1,0 +1,31 @@
+class DontMindMe {
+    public static void main(String[] x) {
+        boolean rv;
+        A a;
+        B b;
+        b = new B();
+    }
+}
+
+class A{
+  int i;
+  boolean flag;
+  int j;
+  public int foo(){
+    return 0;
+  }
+  public boolean fa(){
+    return true;
+  }
+}
+
+class B extends A{
+  A type;
+  int k;
+  public int foo(){
+    return 0;
+  }
+  public boolean bla(){
+    return false;
+  }
+}

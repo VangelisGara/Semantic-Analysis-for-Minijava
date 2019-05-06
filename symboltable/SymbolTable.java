@@ -4,11 +4,11 @@ import staticheckingexception.*;
 
 // Symbol table for our semantic analysis - type checking
 public class SymbolTable {
-  public Map <String,ClassInfo> classes_data; // [ class name , class info ]
+  public LinkedHashMap <String,ClassInfo> classes_data; // [ class name , class info ]
 
   // Constructor
   public SymbolTable(){
-    classes_data = new HashMap<String,ClassInfo>();
+    classes_data = new LinkedHashMap<String,ClassInfo>();
   }
 
   // Insert a class to symbol table

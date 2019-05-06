@@ -7,12 +7,12 @@ public class MethodInfo {
   public String methodName="";
   public String type; // method's type
   public LinkedHashMap <String,String> arguments_data; // [ argument name , type ]
-  public Map <String,String> method_variables_data; // [ methods variable name , type ]
+  public LinkedHashMap <String,String> method_variables_data; // [ methods variable name , type ]
 
   // Constructor
   public MethodInfo(){
     arguments_data = new LinkedHashMap<String,String>();
-    method_variables_data = new HashMap<String,String>();
+    method_variables_data = new LinkedHashMap<String,String>();
   }
 
   // Insert a method argument
